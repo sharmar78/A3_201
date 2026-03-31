@@ -20,6 +20,45 @@
  * WHICH WILL BE FIELDS IN THE STRUCT DataBase BELOW. YOU MAY DECLARE ADDITIONAL
  * STRUCTS AS NEEDED.
  */
+typedef struct It{
+    int ID;
+    char *tabletype;
+    char *material;
+    char *structural;
+    char *street;
+    int neighbourhoodID;
+    char *neighbourhoodName;
+    char *ward;
+    float latitude;
+    float longitude;
+    char *location;
+
+    
+    struct individual_table *tableType_next;
+    struct individual_table *surfaceMaterial_next;
+    struct individual_table *structuralMaterial_next;
+    struct individual_table *neighborhood_next;
+    struct individual_table *picnicTable_next;
+} individual_table;
+
+typedef struct table{
+    int numElems;
+    int capacity;
+    individual_table ** arr;
+} Table;
+
+typedef struct Nt{
+    int numElems;
+    int capacity;
+    individual_table ** arr;
+} NeighbourhoodTable;
+
+typedef struct Pt{
+    int numElems;
+    int capacity;
+    individual_table ** arr;
+} PicnicTable;
+
 
 /*
  * The INIT_SIZE is only relevant if you are using arrays for your data structures. 
