@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[]){
 
-     int option;
+    int option;
     int sortBy;
     int numTabEntry;
     int memberCode;
