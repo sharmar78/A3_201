@@ -13,6 +13,7 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
+#include <string.h> //For 'strcpy'
 
 
 
@@ -86,7 +87,59 @@ DataBase *Db;
  * once, in other words, the four lookup tables must be created at the same time
  * as the main picnicTableTable.
  */
-void importDB(char *fileName);
+void importDB(char *fileName) {
+    FILE *file = fopen(fileName, "r"); //pointer to csv file
+    char line[256] = {'\0'}; //one line from the csv file
+    fgets(line, 256, file); //initial call of fgets to skip header of csv file
+    char *element = malloc(sizeof(char)); //part of a csv line to be inserted into Db
+    char seek = '\0'; //one char of a line of a csv file
+
+    while (seek != EOF) {
+        int i = 0; //i iterates through a line of the csv file
+        int j = 0; //tracks which category of the line is being read
+
+        fgets(line, 256, file); 
+
+        while (seek != '\0') { //iterate until the end of the line
+            if (seek != ',') {
+                seek = line[i];
+                element = realloc(element, sizeof(char));
+                element[i] = seek;
+                i++;
+            } else { //if another category of the line is found
+                switch (j) {
+                case 0: //ID was read
+                    printf("ID: %s\n", &element[j]);
+                    break;
+                case 1: //Table Type was read
+                    printf("Table Type: %s\n", &element[j]);
+                    break;
+                case 2: //Surface Material was read
+                    printf("Surface Material: %s\n", &element[j]);
+                    break;
+                case 3: //Structural Material was read
+                    break;
+                case 4: //Street / Avenue was read
+                    break;
+                case 5: //Neighbourhood ID was read
+                    break;
+                case 6: //Neighbourhood Name was read
+                    break;
+                case 7: //Ward was read
+                    break;
+                case 8: //Latitude was read
+                    break;
+                case 9: //Longitude was read
+                    break;
+                }
+
+                j++;
+                i++; //continue iterating until the end of line
+            }
+        }
+    }
+    fclose(file);
+}
 
 /*
  * Takes the name of a .csv file as parameter and creates a .csv file containing
