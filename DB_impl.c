@@ -9,3 +9,6 @@
  */
 
 #include "DB.h"      /* Import the public database header. */
+
+#include <stdio.h> //For `printf`.
+#include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
