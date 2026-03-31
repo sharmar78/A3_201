@@ -11,9 +11,78 @@
 
 //You may include other original headers as you see fit
 #include "DB.h"
+#include <stdlib>
+#include <stdio.h>
+
 
 int main(int argc, char *argv[]){
 
+     int option;
+    int sortBy;
+    int numTabEntry;
+    int memberCode;
+    // char value; ???
+    int critReport;
+    char* fileName;
 
+    printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n");
+    scanf("%d", &option);
+    printf("\n");
+
+    //Exports the database using the function called exportDB()
+    if (option == 1) {
+        printf("Export");
+        exportDB("export.csv"); //idk if correct
+    } 
+
+    //Count entry in a database by selecting which option
+    if (option == 2) {
+        //count entry;
+        //go through the table and print each occurence of the item
+    }
+
+    //Sorts
+    if (option == 3) {
+        printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+        scanf("%d", &sortBy);
+    }
+
+    if (option == 4) {
+        
+        printf("Enter a numerical table entry to edit: ");
+        scanf("%d", &numTabEntry);
+        
+        while (numTabEntry > 3 || numTabEntry < 0) {
+                printf("Invalid entry. Enter a value between 0 and 3: ");
+                scanf("%d", &numTabEntry);
+            }
+
+        printf("Enter member code (1.TT 2.SM 3.StM): ");
+        scanf("%d", &memberCode);
+        // printf("Enter Value: ");
+        // scanf("%s", &fileName);
+
+    }
+
+    //Reports
+    if (option == 5) {
+        printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
+        scanf("%d", &critReport);
+    }
+    
+    //Compressing database into a file.
+    if (option == 6) {
+        printf("Enter filename: ");
+        scanf("%s", fileName);
+        //If no function make one here.
+    }
+
+    //Exit the program
+    if (option == 7) {
+        exit(0);
+    }
+
+
+    
     return 0;
 }
