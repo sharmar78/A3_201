@@ -11,8 +11,11 @@
 
 //You may include other original headers as you see fit
 #include "DB.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]){
+    printf("%s", argv);
 
 
     return 0;
