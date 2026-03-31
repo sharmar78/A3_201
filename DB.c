@@ -147,7 +147,20 @@ void importDB(char *fileName) {
  * same as the original .csv file from which the DataBase was created (diff
  * command should find no differences).
  */
-void exportDB(char *fileName);
+void exportDB(char *fileName)
+{
+    game new_game_list[GAMES_LIST_SIZE]; //new array for buffering
+
+    FILE *fp = fopen("out.bin", "rb"); //open file called "out.bin". "rb" to read only.
+    if (fp == NULL) //check to make sure the file can be opened
+    {
+        fprintf(stderr, "Error opening file");
+        return;
+    }
+
+    fread(new_game_list, sizeof(game), GAMES_LIST_SIZE, fp); //adds bin values to "new_game_list" array for buffering
+    fclose(fp); //close file after reading
+}
 
 /*
  * Take the name of a member of the picnicTable entry and a value for that member 
