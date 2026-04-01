@@ -4,16 +4,14 @@ To be modified:
 Members: Rythem, Kevin, Jack
 
 
-NOTE TO GROUP: I am not sure if we using 4 or 5, please change if anything is not correct.
-
 
 Data Structure: 
-- We decided to implement a hashtable for this assignment, specifically 4 hashtables for each category
+- We decided to implement 5 arrays for this assignment
 and linked-list to append. Then we will use main class to access the elements from the table.
 
 Progress: 
-
-- implemented importDB() and exportDB() to start off. for importDB() we scan each line until "\0" and then 
+- helper functions to create database, tables, and a node to contain the values of each table is made
+- implemented importDB() and exportDB() is then made. for importDB() we scan each line until "\0" and then 
 split the line into category then copy or append to the linked list.
 - exportDB() will export the csv file and we will use "diff to check" if the output matches.
 - Makefile was made to make compilation faster.

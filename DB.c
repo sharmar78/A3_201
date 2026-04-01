@@ -126,10 +126,14 @@ char *setStr_impl(char *value)
  */
 void importDB(char *fileName) {
     FILE *file = fopen(fileName, "r"); //pointer to csv file
+    if (file == NULL)
+    {
+        printf("Failed to open file.\n");
+        return;
+    }
+
     char line[256] = {'\0'}; //one line from the csv file
-    fgets(line, 256, file); //initial call of fgets to skip header of csv file
-    char *element = malloc(sizeof(char)); //part of a csv line to be inserted into Db
-    char seek = '\0'; //one char of a line of a csv file
+    fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
     int count = 0; //index of the table
     while (fgets(line, sizeof(line), file) != NULL) //read every line of the file
