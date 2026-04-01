@@ -101,29 +101,55 @@ DataBase *db_create_impl(void)
  */
 void importDB(char *fileName) {
     FILE *file = fopen(fileName, "r"); //pointer to csv file
-    if (file == NULL)
-    {
-        printf("Failed to open file.\n");
-        return;
-    }
-
     char line[256] = {'\0'}; //one line from the csv file
-    fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
+    fgets(line, 256, file); //initial call of fgets to skip header of csv file
+    char *element = malloc(sizeof(char)); //part of a csv line to be inserted into Db
+    char seek = '\0'; //one char of a line of a csv file
 
-    int count = 0;
-    while (fgets(line, sizeof(line), file) != NULL)
-    {
-        individual_table *element = malloc(sizeof(*element)); //setting up individial elements
-        char *IDstr = strtok(line, ",");
-        int ID = atoi(IDstr);
-        element->ID = ID;
+    while (seek != EOF) {
+        int i = 0; //i iterates through a line of the csv file
+        int j = 0; //tracks which category of the line is being read
 
+        fgets(line, 256, file); 
 
-        Db->picnicTableTable->arr[count] = element;
-        Db->picnicTableTable->numElems++;
-        count ++;
+        while (seek != '\0') { //iterate until the end of the line
+            if (seek != ',') {
+                seek = line[i];
+                element = realloc(element, sizeof(char));
+                element[i] = seek;
+                i++;
+            } else { //if another category of the line is found
+                switch (j) {
+                case 0: //ID was read
+                    printf("ID: %s\n", &element[j]);
+                    break;
+                case 1: //Table Type was read
+                    printf("Table Type: %s\n", &element[j]);
+                    break;
+                case 2: //Surface Material was read
+                    printf("Surface Material: %s\n", &element[j]);
+                    break;
+                case 3: //Structural Material was read
+                    break;
+                case 4: //Street / Avenue was read
+                    break;
+                case 5: //Neighbourhood ID was read
+                    break;
+                case 6: //Neighbourhood Name was read
+                    break;
+                case 7: //Ward was read
+                    break;
+                case 8: //Latitude was read
+                    break;
+                case 9: //Longitude was read
+                    break;
+                }
+
+                j++;
+                i++; //continue iterating until the end of line
+            }
+        }
     }
-
     fclose(file);
 }
 
