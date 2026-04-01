@@ -3,9 +3,9 @@
  * TODO: Provide a high-level description of what is contained
  * in this file.
  *
- * Author: <TODO: Group Member Names>
- * Lab instructor: <TODO: Your lab instructor's name here>
- * Lecture instructor: <TODO: Your lecture instructor's name here>
+ * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Lab instructor: R.D. Ardy
+ * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
 #include "DB.h"       /* Import the public database header. */
@@ -41,7 +41,7 @@ void importDB(char *fileName) {
         return;
     }
 
-    char line[256] = {'\0'}; //one line from the csv file
+    char line[256] = {'\0'}; //one line from the csv file, 256 is arbitrary and inspired by windows file name limit
     fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
     int count = 0; //index of the table
@@ -114,7 +114,19 @@ void exportDB(char *fileName)
  *  6- Ward
  */
 
-int countEntries(char *memberName, char * value);
+int countEntries(char *memberName, char * value) {
+    int count = 0; //Counter for members
+
+    switch (atoi(memberName)) {
+        case 1:
+            for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
+                if (Db->tableTypeTable[i]->tabletype == value)
+                    count++;
+            }
+    }
+
+
+}
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 

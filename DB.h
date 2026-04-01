@@ -5,9 +5,9 @@
  * Please do not modify any code in this file!  We will be testing your code
  * under the assumption that the public interface matches this interface.
  *
- * Author: <TODO: Group Member Names>
- * Lab instructor: <TODO: Your lab instructor's name here>
- * Lecture instructor: <TODO: Your lecture instructor's name here>
+ * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Lab instructor: R.D. Ardy
+ * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
 #ifndef DB_H
