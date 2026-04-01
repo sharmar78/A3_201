@@ -29,8 +29,8 @@ typedef struct It{
     int neighbourhoodID;
     char *neighbourhoodName;
     char *ward;
-    float latitude;
-    float longitude;
+    char *latitude;
+    char *longitude;
     char *location;
 
     

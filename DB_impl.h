@@ -21,4 +21,6 @@ Table *setupTable_impl(); //setups up inner tables
 
 DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
 
+char *setStr_impl(char *value);
+
 #endif

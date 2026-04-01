@@ -44,6 +44,10 @@ Table *setupTable_impl()
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
 
+
+/*sets up the database table
+* five database struct points to five table structs that contains the array
+*/
 DataBase *db_create_impl(void)
 {
     DataBase *db = malloc(sizeof(*db)); //set up database struct
@@ -91,6 +95,27 @@ DataBase *db_create_impl(void)
     return db;
 }
 
+
+/*
+*helper function to parse lines
+*adds str to element's node's field value
+*ex: round table to table type field
+*/
+char *setStr_impl(char *value)
+{
+    if (value == NULL)
+    {
+        return NULL;
+    }
+    char *field = malloc(strlen(value) + 1);
+    if (field == NULL)
+    {
+        return NULL;
+    }
+    strcpy(field, value);
+    return field;
+}
+
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
  * DataBase with the corresponding dataset information. All five DataBase tables
@@ -110,17 +135,27 @@ void importDB(char *fileName) {
     char line[256] = {'\0'}; //one line from the csv file
     fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
-    int count = 0;
-    while (fgets(line, sizeof(line), file) != NULL)
+    int count = 0; //index of the table
+    while (fgets(line, sizeof(line), file) != NULL) //read every line of the file
     {
         individual_table *element = malloc(sizeof(*element)); //setting up individial elements
-        char *IDstr = strtok(line, ",");
-        int ID = atoi(IDstr);
-        element->ID = ID;
 
+        //assign values into individual nodes
+        element->ID = atoi(strtok(line, ",")); // convert str to int guide: https://www.geeksforgeeks.org/c/convert-string-to-int-in-c/
+        element->tabletype = setStr_impl(strtok(NULL, ",")); //strtok: split string at "comma", or whatever is in quotes: https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
+        element->material = setStr_impl(strtok(NULL, ","));
+        element->structural = setStr_impl(strtok(NULL, ","));
+        element->street = setStr_impl(strtok(NULL, ","));
+        element->neighbourhoodID = atoi(strtok(NULL, ","));
+        element->neighbourhoodName = setStr_impl(strtok(NULL, ","));
+        element->ward = setStr_impl(strtok(NULL, ","));
+        element->latitude = setStr_impl(strtok(NULL, ","));
+        element->longitude = setStr_impl(strtok(NULL, ","));
+        element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
+        //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
         Db->picnicTableTable->arr[count] = element;
-        Db->picnicTableTable->numElems++;
+        Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
         count ++;
     }
 
@@ -135,8 +170,27 @@ void importDB(char *fileName) {
  */
 void exportDB(char *fileName)
 {
-    return;
+    FILE *file = fopen(fileName, "w");
+    if (file == NULL)
+    {
+        printf("Failed to open file.\n");
+        return;
+    }
+
+    fprintf(file, "Id,Table Type,Surface Material,Structural Material,Street / Avenue,Neighbourhood Id,Neighbourhood Name,Ward,Latitude,Longitude,Location\r\n");
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    {
+            fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
+                Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
+                Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
+                Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
+                Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
+                Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
+                Db->picnicTableTable->arr[i]->location);
+    }
+    fclose(file);
 }
+
 
 /*
  * Take the name of a member of the picnicTable entry and a value for that member 

@@ -28,8 +28,16 @@ int main(int argc, char *argv[]){
 
     for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
-        printf("ID: %d\n", Db->picnicTableTable->arr[i]->ID);
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
+            Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
+            Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
+            Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
+            Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
+            Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
+            Db->picnicTableTable->arr[i]->location);
     }
+
+    exportDB("output.txt");
 
     /*
     int option;
