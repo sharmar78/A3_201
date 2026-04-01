@@ -12,3 +12,29 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
+
+
+//compary table type
+int cmpTT(const void *a, const void *b) {
+
+}
+
+//compare surface material
+int cmpSurMat(const void *a, const void *b) {
+    
+}
+
+//Compare structural material
+int cmpStructMat(const void *a, const void *b) {
+    
+}
+
+//Compare neighbourhood name
+int cmpNN(const void *a, const void *b) {
+    
+}
+
+
+int cmpWard(const void *a, const void *b) {
+    
+}
