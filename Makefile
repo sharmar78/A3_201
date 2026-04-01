@@ -20,8 +20,9 @@ testdashboardcsv:
 testdashboardbin:
 	./dashboard -b PicnicTable.bin
 
-valgrindpcode: dashboard
+valgrinddashboard: dashboard
 	valgrind --leak-check=full --track-origins=yes ./$^
 
 clean:
 	rm -f dashboard
+	rm -f DB.o
