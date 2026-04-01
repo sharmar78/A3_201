@@ -7,9 +7,9 @@
  * It is a common convention to append "_impl" to a private implementation of
  * some public interface, so we do so here.
  *
- * Author: <TODO: Group Member Names>
- * Lab instructor: <TODO: Your lab instructor's name here>
- * Lecture instructor: <TODO: Your lecture instructor's name here>
+ * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Lab instructor: R.D. Ardy
+ * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
 #include "DB.h"
