@@ -11,12 +11,27 @@
 
 //You may include other original headers as you see fit
 #include "DB.h"
+#include "DB_impl.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 
 int main(int argc, char *argv[]){
 
+    for (int i = 0; i < argc; i ++)
+    {
+        printf("argv[%d] = %s\n", i, argv[i]);
+    }
+
+    Db = db_create_impl();
+    importDB(argv[2]);
+
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    {
+        printf("ID: %d\n", Db->picnicTableTable->arr[i]->ID);
+    }
+
+    /*
     int option;
     int sortBy;
     int numTabEntry;
@@ -81,6 +96,7 @@ int main(int argc, char *argv[]){
     if (option == 7) {
         exit(0);
     }
+    */
 
 
     
