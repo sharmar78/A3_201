@@ -9,6 +9,7 @@
  */
 
 #include "DB.h"       /* Import the public database header. */
+
 #include "DB_impl.h"  /* Import the private database header */
 
 #include <stdio.h> //For `printf`.
@@ -21,6 +22,8 @@
 /* That should be the only global variable declared*/
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
+
+
 
 /*
  * Takes the name of a .csv file as parameter and creates and populates the

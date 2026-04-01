@@ -39,15 +39,14 @@ int main(int argc, char *argv[]){
     }
 
     exportDB("output.txt");
-
     
     int option;
     int sortBy;
     int numTabEntry;
     int memberCode;
     // char value; ???
+    char fileName[20];
     int critReport;
-    char* fileName;
 
     printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n");
     scanf("%d", &option);
@@ -63,7 +62,7 @@ int main(int argc, char *argv[]){
     } else if (option == 3) { //Sorts
         printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
         scanf("%d", &sortBy);
-    } else if (option == 4) {
+    } else if (option == 4) { 
         printf("Enter a numerical table entry to edit: ");
         scanf("%d", &numTabEntry);   
         while (numTabEntry > 3 || numTabEntry < 0) {
@@ -77,10 +76,11 @@ int main(int argc, char *argv[]){
     } else if (option == 5) {     //Reports
         printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
         scanf("%d", &critReport);
-    } else if (option == 6) {    //Compressing database into a file.
+    //Compressing database into a file.
+    } else if (option == 6) {   
         printf("Enter filename: ");
         scanf("%s", fileName);
-        //If no function make one here.
+        compressDB(fileName);
     } else if (option == 7) {
         freeDB();
         exit(0);

@@ -17,25 +17,15 @@
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
+Table resize();
+
 Table *setupTable_impl(); //setups up inner tables
 
 DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
 
 char *setStr_impl(char *value);
 
-//compary table type
-int cmpTT(const void *a, const void *b);
+int compressDB(char fileName[20]);
 
-//compare surface material
-int cmpSurMat(const void *a, const void *b);
-
-//Compare structural material
-int cmpStructMat(const void *a, const void *b);
-
-//Compare neighbourhood name
-int cmpNN(const void *a, const void *b);
-
-//TO-DO: Replace this comment with descriptor for cmpWard
-int cmpWard(const void *a, const void *b)
 
 #endif

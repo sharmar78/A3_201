@@ -8,12 +8,29 @@
  * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
-#include "DB.h"      /* Import the public database header. */
+#include "DB.h"    
+#include "DB_impl.h"  /* Import the public database header. */
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
 
 
+Table resize(Table *table) {
+    int currSize = table->capacity;
+    table = realloc(table, 2 * currSize);
+}
+
+int compressDB(char fileName[20]) {
+
+    FILE *file = fopen(fileName, "wb");
+
+    if (file == NULL) {
+        printf("Failed to write into file.\n");
+        return;
+    }
+
+    fclose(fileName);
+}
 
 Table *setupTable_impl()
 {
@@ -99,35 +116,9 @@ char *setStr_impl(char *value)
         return NULL;
     }
     char *field = malloc(strlen(value) + 1);
-    if (field == NULL)
-    {
+    if (field == NULL) {
         return NULL;
     }
     strcpy(field, value);
     return field;
-}
-
-//compary table type
-int cmpTT(const void *a, const void *b) {
-
-}
-
-//compare surface material
-int cmpSurMat(const void *a, const void *b) {
-    
-}
-
-//Compare structural material
-int cmpStructMat(const void *a, const void *b) {
-    
-}
-
-//Compare neighbourhood name
-int cmpNN(const void *a, const void *b) {
-    
-}
-
-
-int cmpWard(const void *a, const void *b) {
-    
 }
