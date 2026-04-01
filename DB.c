@@ -44,6 +44,10 @@ Table *setupTable_impl()
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
 
+
+/*sets up the database table
+* five database struct points to five table structs that contains the array
+*/
 DataBase *db_create_impl(void)
 {
     DataBase *db = malloc(sizeof(*db)); //set up database struct
@@ -91,6 +95,27 @@ DataBase *db_create_impl(void)
     return db;
 }
 
+
+/*
+*helper function to parse lines
+*adds str to element's node's field value
+*ex: round table to table type field
+*/
+char *setStr_impl(char *value)
+{
+    if (value == NULL)
+    {
+        return NULL;
+    }
+    char *field = malloc(strlen(value) + 1);
+    if (field == NULL)
+    {
+        return NULL;
+    }
+    strcpy(field, value);
+    return field;
+}
+
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
  * DataBase with the corresponding dataset information. All five DataBase tables
@@ -106,49 +131,28 @@ void importDB(char *fileName) {
     char *element = malloc(sizeof(char)); //part of a csv line to be inserted into Db
     char seek = '\0'; //one char of a line of a csv file
 
-    while (seek != EOF) {
-        int i = 0; //i iterates through a line of the csv file
-        int j = 0; //tracks which category of the line is being read
+    int count = 0; //index of the table
+    while (fgets(line, sizeof(line), file) != NULL) //read every line of the file
+    {
+        individual_table *element = malloc(sizeof(*element)); //setting up individial elements
 
-        fgets(line, 256, file); 
+        //assign values into individual nodes
+        element->ID = atoi(strtok(line, ",")); // convert str to int guide: https://www.geeksforgeeks.org/c/convert-string-to-int-in-c/
+        element->tabletype = setStr_impl(strtok(NULL, ",")); //strtok: split string at "comma", or whatever is in quotes: https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
+        element->material = setStr_impl(strtok(NULL, ","));
+        element->structural = setStr_impl(strtok(NULL, ","));
+        element->street = setStr_impl(strtok(NULL, ","));
+        element->neighbourhoodID = atoi(strtok(NULL, ","));
+        element->neighbourhoodName = setStr_impl(strtok(NULL, ","));
+        element->ward = setStr_impl(strtok(NULL, ","));
+        element->latitude = setStr_impl(strtok(NULL, ","));
+        element->longitude = setStr_impl(strtok(NULL, ","));
+        element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
-        while (seek != '\0') { //iterate until the end of the line
-            if (seek != ',') {
-                seek = line[i];
-                element = realloc(element, sizeof(char));
-                element[i] = seek;
-                i++;
-            } else { //if another category of the line is found
-                switch (j) {
-                case 0: //ID was read
-                    printf("ID: %s\n", &element[j]);
-                    break;
-                case 1: //Table Type was read
-                    printf("Table Type: %s\n", &element[j]);
-                    break;
-                case 2: //Surface Material was read
-                    printf("Surface Material: %s\n", &element[j]);
-                    break;
-                case 3: //Structural Material was read
-                    break;
-                case 4: //Street / Avenue was read
-                    break;
-                case 5: //Neighbourhood ID was read
-                    break;
-                case 6: //Neighbourhood Name was read
-                    break;
-                case 7: //Ward was read
-                    break;
-                case 8: //Latitude was read
-                    break;
-                case 9: //Longitude was read
-                    break;
-                }
-
-                j++;
-                i++; //continue iterating until the end of line
-            }
-        }
+        //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
+        Db->picnicTableTable->arr[count] = element;
+        Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
+        count ++;
     }
     fclose(file);
 }
@@ -161,8 +165,27 @@ void importDB(char *fileName) {
  */
 void exportDB(char *fileName)
 {
-    return;
+    FILE *file = fopen(fileName, "w");
+    if (file == NULL)
+    {
+        printf("Failed to open file.\n");
+        return;
+    }
+
+    fprintf(file, "Id,Table Type,Surface Material,Structural Material,Street / Avenue,Neighbourhood Id,Neighbourhood Name,Ward,Latitude,Longitude,Location\r\n");
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    {
+            fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
+                Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
+                Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
+                Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
+                Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
+                Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
+                Db->picnicTableTable->arr[i]->location);
+    }
+    fclose(file);
 }
+
 
 /*
  * Take the name of a member of the picnicTable entry and a value for that member 

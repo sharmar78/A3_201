@@ -26,3 +26,6 @@ valgrindDashboard: dashboard
 #Clean rule removes all .0 files
 clean:
 	rm -f *.o dashboard
+	rm -f dashboard
+	rm -f DB.o
+	rm -f output.txt
