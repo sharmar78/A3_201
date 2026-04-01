@@ -1,28 +1,28 @@
+#Makefile for A3
 
-
-
-
-
-
-
+#Flags
 CC = gcc
 CFLAGS= -Wall -g -std=c99
 
 DB.o: DB.c DB.h DB_impl.h
 	$(CC) $(CFLAGS) -c $<
 
-dashboard: dashboard.c DB.o
+#Compile dashboard
+dashboard: dashboard.c DB.o DB.h DB_impl.h
 	$(CC) $(CFLAGS) $^ -o $@
 
-testdashboardcsv:
+#Unsure
+testDashboardCsv:
 	./dashboard -c PicnicTableSmall.csv
 
-testdashboardbin:
-	./dashboard -b PicnicTable.bin
+#Export
+testDashboardBin:
+	./dashboard -b PicnicTablec.bin
 
-valgrinddashboard: dashboard
+#Checks leaks
+valgrindDashboard: dashboard
 	valgrind --leak-check=full --track-origins=yes ./$^
 
+#Clean rule removes all .0 files
 clean:
-	rm -f dashboard
-	rm -f DB.o
+	rm -f *.o dashboard
