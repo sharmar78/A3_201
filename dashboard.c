@@ -11,13 +11,37 @@
 
 //You may include other original headers as you see fit
 #include "DB.h"
-#include <stdlib>
+#include "DB_impl.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 
 
 int main(int argc, char *argv[]){
 
-     int option;
+    //Prints the arguments given
+    for (int i = 0; i < argc; i++) {
+        printf("argv[%d] = %s\n", i, argv[i]);
+    }
+
+    Db = db_create_impl();
+    importDB(argv[2]);
+
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    {
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
+            Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
+            Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
+            Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
+            Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
+            Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
+            Db->picnicTableTable->arr[i]->location);
+    }
+
+    exportDB("output.txt");
+
+    
+    int option;
     int sortBy;
     int numTabEntry;
     int memberCode;
@@ -33,56 +57,33 @@ int main(int argc, char *argv[]){
     if (option == 1) {
         printf("Export");
         exportDB("export.csv"); //idk if correct
-    } 
-
-    //Count entry in a database by selecting which option
-    if (option == 2) {
+    } else if (option == 2) {   //Count entry in a database by selecting which option
         //count entry;
         //go through the table and print each occurence of the item
-    }
-
-    //Sorts
-    if (option == 3) {
+    } else if (option == 3) { //Sorts
         printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
         scanf("%d", &sortBy);
-    }
-
-    if (option == 4) {
-        
+    } else if (option == 4) {
         printf("Enter a numerical table entry to edit: ");
-        scanf("%d", &numTabEntry);
-        
+        scanf("%d", &numTabEntry);   
         while (numTabEntry > 3 || numTabEntry < 0) {
                 printf("Invalid entry. Enter a value between 0 and 3: ");
                 scanf("%d", &numTabEntry);
             }
-
         printf("Enter member code (1.TT 2.SM 3.StM): ");
         scanf("%d", &memberCode);
         // printf("Enter Value: ");
         // scanf("%s", &fileName);
-
-    }
-
-    //Reports
-    if (option == 5) {
+    } else if (option == 5) {     //Reports
         printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
         scanf("%d", &critReport);
-    }
-    
-    //Compressing database into a file.
-    if (option == 6) {
+    } else if (option == 6) {    //Compressing database into a file.
         printf("Enter filename: ");
         scanf("%s", fileName);
         //If no function make one here.
-    }
-
-    //Exit the program
-    if (option == 7) {
+    } else if (option == 7) {
+        freeDB();
         exit(0);
     }
-
-
-    
     return 0;
 }

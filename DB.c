@@ -17,67 +17,104 @@
 
 
 
-/*
- * DECLARE AND TYPEDEF HERE THE STRUCTS Table, NeighbourhoodTable, AND PicnicTable
- * WHICH WILL BE FIELDS IN THE STRUCT DataBase BELOW. YOU MAY DECLARE ADDITIONAL
- * STRUCTS AS NEEDED.
- */
-typedef struct{
-    int ID;
-    char tabletype[20];
-    char material[20];
-    char structural[20];
-    char neighbourhood[20];
-
-    individual_table *tableType_next;
-    individual_table *surfaceMaterial_next;
-    individual_table *structuralMaterial_next;
-    individual_table *neighborhood_next;
-    individual_table *picnicTable_next;
-} individual_table;
-
-typedef struct{
-    int numElems;
-    int capacity;
-    struct node ** arr;
-} Table;
-
-typedef struct{
-    int numElems;
-    int capacity;
-    struct node ** arr;
-} NeighbourhoodTable;
-
-typedef struct{
-    int numElems;
-    int capacity;
-    struct node ** arr;
-} PicnicTable;
-
-/*
- * The INIT_SIZE is only relevant if you are using arrays for your data structures. 
- * If you are using linked lists you will not need it
- */
-#define INIT_SIZE 5  
-
-
-/*
- * You may change the internal details of the struct below,
- * only keep it typedef'ed to DataBase
- */
-typedef struct {
-    // You can add anything you see fit here
-    Table *tableTypeTable;
-    Table *surfaceMaterialTable;
-    Table *structuralMaterialTable;
-    NeighbourhoodTable *neighborhoodTable;
-    PicnicTable *picnicTableTable;
-} DataBase;
+Table *setupTable_impl()
+{
+    Table *table = malloc(sizeof(*table));
+    if (table == NULL)
+    {
+        return NULL;
+    }
+    table->numElems = 0;
+    table->capacity = 20;
+    table->arr = malloc(table->capacity * sizeof(*table->arr));
+    if (table->arr == NULL)
+    {
+        free(table);
+        return NULL;
+    }
+    for (int i = 0; i < table->capacity; i ++)
+    {
+        table->arr[i] = NULL;
+    }
+    return table;
+}
 
 /* Declare a global DataBase variable*/
 /* That should be the only global variable declared*/
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
+
+
+/*sets up the database table
+* five database struct points to five table structs that contains the array
+*/
+DataBase *db_create_impl(void)
+{
+    DataBase *db = malloc(sizeof(*db)); //set up database struct
+    if (db == NULL)
+    {
+        return NULL; //allocation failed
+    }
+
+    // set up tables
+    db->tableTypeTable = setupTable_impl();
+    db->surfaceMaterialTable = setupTable_impl();
+    db->structuralMaterialTable = setupTable_impl();
+    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL)
+    {
+        return NULL;
+    }
+
+    db->neighborhoodTable = malloc(sizeof(*db->neighborhoodTable));
+    db->neighborhoodTable->numElems = 0;
+    db->neighborhoodTable->capacity = 20;
+    db->neighborhoodTable->arr = malloc(db->neighborhoodTable->capacity * sizeof(*db->picnicTableTable->arr));
+    if (db->neighborhoodTable->arr == NULL)
+    {
+        free(db->neighborhoodTable);
+        return NULL;
+    }
+    for (int i = 0; i < db->neighborhoodTable->capacity; i ++)
+    {
+        db->neighborhoodTable->arr[i] = NULL;
+    }
+
+    db->picnicTableTable = malloc(sizeof(*db->picnicTableTable));
+    db->picnicTableTable->numElems = 0;
+    db->picnicTableTable->capacity = 20;
+    db->picnicTableTable->arr = malloc(db->picnicTableTable->capacity * sizeof(*db->picnicTableTable->arr));
+    if (db->picnicTableTable->arr == NULL)
+    {
+        free(db->picnicTableTable);
+        return NULL;
+    }
+    for (int i = 0; i < db->picnicTableTable->capacity; i ++)
+    {
+        db->picnicTableTable->arr[i] = NULL;
+    }
+    return db;
+}
+
+
+/*
+*helper function to parse lines
+*adds str to element's node's field value
+*ex: round table to table type field
+*/
+char *setStr_impl(char *value)
+{
+    if (value == NULL)
+    {
+        return NULL;
+    }
+    char *field = malloc(strlen(value) + 1);
+    if (field == NULL)
+    {
+        return NULL;
+    }
+    strcpy(field, value);
+    return field;
+}
 
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
@@ -89,54 +126,37 @@ DataBase *Db;
  */
 void importDB(char *fileName) {
     FILE *file = fopen(fileName, "r"); //pointer to csv file
+    if (file == NULL)
+    {
+        printf("Failed to open file.\n");
+        return;
+    }
+
     char line[256] = {'\0'}; //one line from the csv file
-    fgets(line, 256, file); //initial call of fgets to skip header of csv file
-    char *element = malloc(sizeof(char)); //part of a csv line to be inserted into Db
-    char seek = '\0'; //one char of a line of a csv file
+    fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
-    while (seek != EOF) {
-        int i = 0; //i iterates through a line of the csv file
-        int j = 0; //tracks which category of the line is being read
+    int count = 0; //index of the table
+    while (fgets(line, sizeof(line), file) != NULL) //read every line of the file
+    {
+        individual_table *element = malloc(sizeof(*element)); //setting up individial elements
 
-        fgets(line, 256, file); 
+        //assign values into individual nodes
+        element->ID = atoi(strtok(line, ",")); // convert str to int guide: https://www.geeksforgeeks.org/c/convert-string-to-int-in-c/
+        element->tabletype = setStr_impl(strtok(NULL, ",")); //strtok: split string at "comma", or whatever is in quotes: https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
+        element->material = setStr_impl(strtok(NULL, ","));
+        element->structural = setStr_impl(strtok(NULL, ","));
+        element->street = setStr_impl(strtok(NULL, ","));
+        element->neighbourhoodID = atoi(strtok(NULL, ","));
+        element->neighbourhoodName = setStr_impl(strtok(NULL, ","));
+        element->ward = setStr_impl(strtok(NULL, ","));
+        element->latitude = setStr_impl(strtok(NULL, ","));
+        element->longitude = setStr_impl(strtok(NULL, ","));
+        element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
-        while (seek != '\0') { //iterate until the end of the line
-            if (seek != ',') {
-                seek = line[i];
-                element = realloc(element, sizeof(char));
-                element[i] = seek;
-                i++;
-            } else { //if another category of the line is found
-                switch (j) {
-                case 0: //ID was read
-                    printf("ID: %s\n", &element[j]);
-                    break;
-                case 1: //Table Type was read
-                    printf("Table Type: %s\n", &element[j]);
-                    break;
-                case 2: //Surface Material was read
-                    printf("Surface Material: %s\n", &element[j]);
-                    break;
-                case 3: //Structural Material was read
-                    break;
-                case 4: //Street / Avenue was read
-                    break;
-                case 5: //Neighbourhood ID was read
-                    break;
-                case 6: //Neighbourhood Name was read
-                    break;
-                case 7: //Ward was read
-                    break;
-                case 8: //Latitude was read
-                    break;
-                case 9: //Longitude was read
-                    break;
-                }
-
-                j++;
-                i++; //continue iterating until the end of line
-            }
-        }
+        //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
+        Db->picnicTableTable->arr[count] = element;
+        Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
+        count ++;
     }
     fclose(file);
 }
@@ -147,7 +167,29 @@ void importDB(char *fileName) {
  * same as the original .csv file from which the DataBase was created (diff
  * command should find no differences).
  */
-void exportDB(char *fileName);
+void exportDB(char *fileName)
+{
+    FILE *file = fopen(fileName, "w");
+    if (file == NULL)
+    {
+        printf("Failed to open file.\n");
+        return;
+    }
+
+    fprintf(file, "Id,Table Type,Surface Material,Structural Material,Street / Avenue,Neighbourhood Id,Neighbourhood Name,Ward,Latitude,Longitude,Location\r\n");
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    {
+            fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
+                Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
+                Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
+                Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
+                Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
+                Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
+                Db->picnicTableTable->arr[i]->location);
+    }
+    fclose(file);
+}
+
 
 /*
  * Take the name of a member of the picnicTable entry and a value for that member 
@@ -205,4 +247,77 @@ void reportByWard();
 /*
  * Frees all dynamic memory associated with each table upon exit. 
  */
-void freeDB();
+void freeDB()
+{
+    if (Db == NULL)
+    {
+        return;
+    }
+
+    if(Db->picnicTableTable != NULL)
+    {
+        for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+        {
+            if (Db->picnicTableTable->arr[i] != NULL)
+            {
+                    free(Db->picnicTableTable->arr[i]->tabletype);
+                    free(Db->picnicTableTable->arr[i]->material);
+                    free(Db->picnicTableTable->arr[i]->structural);
+                    free(Db->picnicTableTable->arr[i]->street);
+                    free(Db->picnicTableTable->arr[i]->neighbourhoodName);
+                    free(Db->picnicTableTable->arr[i]->ward);
+                    free(Db->picnicTableTable->arr[i]->location);
+                    free(Db->picnicTableTable->arr[i]);
+            }
+        }
+        free(Db->picnicTableTable->arr);
+    }
+
+
+    if(Db->tableTypeTable != NULL)
+    {
+        //for (int i = 0; i < Db->tableTypeTable->capacity; i++)
+        //{
+            //if(Db->tableTypeTable->arr[i] != NULL)
+            //{
+            //    free(Db->tableTypeTable->arr[i]);
+            //}
+        //}
+        if(Db->tableTypeTable->arr != NULL)
+        {
+            free(Db->tableTypeTable->arr);
+        }
+    }
+
+    if(Db->surfaceMaterialTable != NULL)
+    {
+        if(Db->surfaceMaterialTable->arr != NULL)
+        {
+            free(Db->surfaceMaterialTable->arr);
+        }
+    }
+
+    if(Db->structuralMaterialTable != NULL)
+    {
+        if(Db->structuralMaterialTable->arr != NULL)
+        {
+            free(Db->structuralMaterialTable->arr);
+        }
+    }
+
+    if(Db->neighborhoodTable != NULL)
+    {
+        if(Db->neighborhoodTable->arr != NULL)
+        {
+            free(Db->neighborhoodTable->arr);
+        }
+    }
+
+
+    free(Db->tableTypeTable);
+    free(Db->surfaceMaterialTable);
+    free(Db->structuralMaterialTable);
+    free(Db->neighborhoodTable);
+    free(Db->picnicTableTable);
+    free(Db);
+}

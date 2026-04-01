@@ -12,9 +12,15 @@
  * Lecture instructor: <TODO: Your lecture instructor's name here>
  */
 
+#include "DB.h"
 
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
+Table *setupTable_impl(); //setups up inner tables
+
+DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
+
+char *setStr_impl(char *value);
 
 #endif
