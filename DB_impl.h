@@ -23,4 +23,19 @@ DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setup
 
 char *setStr_impl(char *value);
 
+//compary table type
+int cmpTT(const void *a, const void *b);
+
+//compare surface material
+int cmpSurMat(const void *a, const void *b);
+
+//Compare structural material
+int cmpStructMat(const void *a, const void *b);
+
+//Compare neighbourhood name
+int cmpNN(const void *a, const void *b);
+
+//TO-DO: Replace this comment with descriptor for cmpWard
+int cmpWard(const void *a, const void *b)
+
 #endif
