@@ -1,0 +1,19 @@
+Design for A3:
+To be modified:
+
+Members: Rythem, Kevin, Jack
+
+
+
+Data Structure: 
+- We decided to implement 5 arrays for this assignment
+and linked-list to append. Then we will use main class to access the elements from the table.
+
+Progress: 
+- helper functions to create database, tables, and a node to contain the values of each table is made
+- implemented importDB() and exportDB() is then made. for importDB() we scan each line until "\0" and then 
+split the line into category then copy or append to the linked list.
+- exportDB() will export the csv file and we will use "diff to check" if the output matches.
+- Makefile was made to make compilation faster.
+- We will be using qSort to sort the table.
+

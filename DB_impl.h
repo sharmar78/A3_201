@@ -7,9 +7,9 @@
  * It is a common convention to append "_impl" to a private implementation of
  * some public interface, so we do so here.
  *
- * Author: <TODO: Group Member Names>
- * Lab instructor: <TODO: Your lab instructor's name here>
- * Lecture instructor: <TODO: Your lecture instructor's name here>
+ * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Lab instructor: R.D. Ardy
+ * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
 #include "DB.h"
@@ -17,10 +17,15 @@
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
+Table resize();
+
 Table *setupTable_impl(); //setups up inner tables
 
 DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
 
 char *setStr_impl(char *value);
+
+int compressDB(char fileName[20]);
+
 
 #endif

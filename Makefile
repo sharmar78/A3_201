@@ -1,32 +1,35 @@
+# Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+# Lab instructor: R.D. Ardy
+# Lecture instructor: R.D. Ardy, Dhara Wagh
+#Makefile for A3
 
-
-
-
-
-
-
+#Flags
 CC = gcc
 CFLAGS= -Wall -g -std=c99
 
-DB.o: DB.c DB.h DB_impl.h
-	$(CC) $(CFLAGS) -c $<
-
-dashboard: dashboard.c DB.o
+#Compile dashboard
+dashboard: dashboard.c DB.o DB_impl.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-testdashboardcsv:
+
+DB.o: DB.c DB.h
+	$(CC) $(CFLAGS) -c $<
+
+DB_impl.o: DB_impl.c DB_impl.h
+	$(CC) $(CFLAGS) -c $<
+
+#Unsure
+testDashboardCsv:
 	./dashboard -c PicnicTableSmall.csv
 
-testdashboardbin:
-	./dashboard -b PicnicTable.bin
+#Export
+testDashboardBin:
+	./dashboard -b PicnicTablec.bin
 
-testexportDB:
-	diff output.txt PicnicTableSmall.csv
+#Checks leaks
+valgrindDashboard: dashboard
+	valgrind --leak-check=full --track-origins=yes ./$^
 
-valgrinddashboard: dashboard
-	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$^
-
+#Clean rule removes all .0 files
 clean:
-	rm -f dashboard
-	rm -f DB.o
-	rm -f output.txt
+	rm -f *.o dashboard output.txt out.bin

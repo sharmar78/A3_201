@@ -3,9 +3,9 @@
  * TODO: Provide a high-level description of what is contained
  * in this file.
  *
- * Author: <TODO: Group Member Names>
- * Lab instructor: <TODO: Your lab instructor's name here>
- * Lecture instructor: <TODO: Your lecture instructor's name here>
+ * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Lab instructor: R.D. Ardy
+ * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
 #include "DB.h"       /* Import the public database header. */
@@ -17,105 +17,12 @@
 
 
 
-Table *setupTable_impl()
-{
-    Table *table = malloc(sizeof(*table));
-    if (table == NULL)
-    {
-        return NULL;
-    }
-    table->numElems = 0;
-    table->capacity = 20;
-    table->arr = malloc(table->capacity * sizeof(*table->arr));
-    if (table->arr == NULL)
-    {
-        free(table);
-        return NULL;
-    }
-    for (int i = 0; i < table->capacity; i ++)
-    {
-        table->arr[i] = NULL;
-    }
-    return table;
-}
-
 /* Declare a global DataBase variable*/
 /* That should be the only global variable declared*/
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
 
 
-/*sets up the database table
-* five database struct points to five table structs that contains the array
-*/
-DataBase *db_create_impl(void)
-{
-    DataBase *db = malloc(sizeof(*db)); //set up database struct
-    if (db == NULL)
-    {
-        return NULL; //allocation failed
-    }
-
-    // set up tables
-    db->tableTypeTable = setupTable_impl();
-    db->surfaceMaterialTable = setupTable_impl();
-    db->structuralMaterialTable = setupTable_impl();
-    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL)
-    {
-        freeDB();
-        return NULL;
-    }
-
-    db->neighborhoodTable = malloc(sizeof(*db->neighborhoodTable));
-    db->neighborhoodTable->numElems = 0;
-    db->neighborhoodTable->capacity = 20;
-    db->neighborhoodTable->arr = malloc(db->neighborhoodTable->capacity * sizeof(*db->picnicTableTable->arr));
-    if (db->neighborhoodTable->arr == NULL)
-    {
-        freeDB();
-        return NULL;
-    }
-    for (int i = 0; i < db->neighborhoodTable->capacity; i ++)
-    {
-        db->neighborhoodTable->arr[i] = NULL;
-    }
-
-    db->picnicTableTable = malloc(sizeof(*db->picnicTableTable));
-    db->picnicTableTable->numElems = 0;
-    db->picnicTableTable->capacity = 20;
-    db->picnicTableTable->arr = malloc(db->picnicTableTable->capacity * sizeof(*db->picnicTableTable->arr));
-    if (db->picnicTableTable->arr == NULL)
-    {
-        freeDB();
-        return NULL;
-    }
-    for (int i = 0; i < db->picnicTableTable->capacity; i ++)
-    {
-        db->picnicTableTable->arr[i] = NULL;
-    }
-    return db;
-}
-
-
-/*
-*helper function to parse lines
-*adds str to element's node's field value
-*ex: round table to table type field
-*/
-char *setStr_impl(char *value)
-{
-    if (value == NULL)
-    {
-        return NULL;
-    }
-    char *field = malloc(strlen(value) + 1);
-    if (field == NULL)
-    {
-        return NULL;
-    }
-    strcpy(field, value);
-    return field;
-}
 
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
@@ -133,7 +40,7 @@ void importDB(char *fileName) {
         return;
     }
 
-    char line[256] = {'\0'}; //one line from the csv file
+    char line[256] = {'\0'}; //one line from the csv file, 256 is arbitrary and inspired by windows file name limit
     fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
     int count = 0; //index of the table
@@ -159,7 +66,6 @@ void importDB(char *fileName) {
         Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
         count ++;
     }
-
     fclose(file);
 }
 
@@ -207,7 +113,45 @@ void exportDB(char *fileName)
  *  6- Ward
  */
 
-int countEntries(char *memberName, char * value);
+int countEntries(char *memberName, char * value) {
+    int count = 0; //Counter for members
+
+    switch (atoi(memberName)) {
+        case 1:
+            for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
+                if (Db->tableTypeTable[i]->tabletype == value)
+                    count++;
+            }
+        case 2:
+            for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
+                if (Db->surfaceMaterialTable[i]->tabletype == value)
+                    count++;
+            }
+        case 3:
+            for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
+                if (Db->structuralMaterialTable[i]->tabletype == value)
+                    count++;
+            }
+        case 4:
+            for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+                if (Db->neighborhoodTable[i]->neighbourhoodID == value)
+                    count++;
+            }
+        case 4:
+            for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+                if (Db->neighborhoodTable[i]->neighbourhoodName == value)
+                    count++;
+            }
+        case 5:
+            for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+                if (Db->neighborhoodTable[i]->neighbourhoodName == value)
+                    count++;
+            }
+        case 6:
+            break; //Not sure what array to check here
+    }
+    return count;
+}
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 
