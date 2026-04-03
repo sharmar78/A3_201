@@ -24,7 +24,7 @@ testexportDB:
 	diff output.txt PicnicTableSmall.csv
 
 valgrinddashboard: dashboard
-	valgrind --leak-check=full --track-origins=yes ./$^
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$^
 
 clean:
 	rm -f dashboard

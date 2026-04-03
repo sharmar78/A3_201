@@ -62,6 +62,7 @@ DataBase *db_create_impl(void)
     db->structuralMaterialTable = setupTable_impl();
     if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL)
     {
+        freeDB();
         return NULL;
     }
 
@@ -71,7 +72,7 @@ DataBase *db_create_impl(void)
     db->neighborhoodTable->arr = malloc(db->neighborhoodTable->capacity * sizeof(*db->picnicTableTable->arr));
     if (db->neighborhoodTable->arr == NULL)
     {
-        free(db->neighborhoodTable);
+        freeDB();
         return NULL;
     }
     for (int i = 0; i < db->neighborhoodTable->capacity; i ++)
@@ -85,7 +86,7 @@ DataBase *db_create_impl(void)
     db->picnicTableTable->arr = malloc(db->picnicTableTable->capacity * sizeof(*db->picnicTableTable->arr));
     if (db->picnicTableTable->arr == NULL)
     {
-        free(db->picnicTableTable);
+        freeDB();
         return NULL;
     }
     for (int i = 0; i < db->picnicTableTable->capacity; i ++)
@@ -250,75 +251,34 @@ void reportByWard();
  */
 void freeDB()
 {
-    if (Db == NULL)
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
-        return;
-    }
-
-    if(Db->picnicTableTable != NULL)
-    {
-        for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+        if (Db->picnicTableTable->arr[i] != NULL)
         {
-            if (Db->picnicTableTable->arr[i] != NULL)
-            {
-                    free(Db->picnicTableTable->arr[i]->tabletype);
-                    free(Db->picnicTableTable->arr[i]->material);
-                    free(Db->picnicTableTable->arr[i]->structural);
-                    free(Db->picnicTableTable->arr[i]->street);
-                    free(Db->picnicTableTable->arr[i]->neighbourhoodName);
-                    free(Db->picnicTableTable->arr[i]->ward);
-                    free(Db->picnicTableTable->arr[i]->location);
-                    free(Db->picnicTableTable->arr[i]);
-            }
-        }
-        free(Db->picnicTableTable->arr);
-    }
-
-
-    if(Db->tableTypeTable != NULL)
-    {
-        //for (int i = 0; i < Db->tableTypeTable->capacity; i++)
-        //{
-            //if(Db->tableTypeTable->arr[i] != NULL)
-            //{
-            //    free(Db->tableTypeTable->arr[i]);
-            //}
-        //}
-        if(Db->tableTypeTable->arr != NULL)
-        {
-            free(Db->tableTypeTable->arr);
+            free(Db->picnicTableTable->arr[i]->tabletype);
+            free(Db->picnicTableTable->arr[i]->material);
+            free(Db->picnicTableTable->arr[i]->structural);
+            free(Db->picnicTableTable->arr[i]->street);
+            free(Db->picnicTableTable->arr[i]->neighbourhoodName);
+            free(Db->picnicTableTable->arr[i]->ward);
+            free(Db->picnicTableTable->arr[i]->latitude);
+            free(Db->picnicTableTable->arr[i]->longitude);
+            free(Db->picnicTableTable->arr[i]->location);
+            free(Db->picnicTableTable->arr[i]);
+            Db->picnicTableTable->arr[i] = NULL;
         }
     }
-
-    if(Db->surfaceMaterialTable != NULL)
-    {
-        if(Db->surfaceMaterialTable->arr != NULL)
-        {
-            free(Db->surfaceMaterialTable->arr);
-        }
-    }
-
-    if(Db->structuralMaterialTable != NULL)
-    {
-        if(Db->structuralMaterialTable->arr != NULL)
-        {
-            free(Db->structuralMaterialTable->arr);
-        }
-    }
-
-    if(Db->neighborhoodTable != NULL)
-    {
-        if(Db->neighborhoodTable->arr != NULL)
-        {
-            free(Db->neighborhoodTable->arr);
-        }
-    }
-
+    free(Db->picnicTableTable->arr);    
+    free(Db->tableTypeTable->arr);
+    free(Db->surfaceMaterialTable->arr);
+    free(Db->structuralMaterialTable->arr);
+    free(Db->neighborhoodTable->arr);
 
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
+
     free(Db);
 }
