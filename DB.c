@@ -9,7 +9,6 @@
  */
 
 #include "DB.h"       /* Import the public database header. */
-
 #include "DB_impl.h"  /* Import the private database header */
 
 #include <stdio.h> //For `printf`.
@@ -196,75 +195,34 @@ void reportByWard();
  */
 void freeDB()
 {
-    if (Db == NULL)
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
-        return;
-    }
-
-    if(Db->picnicTableTable != NULL)
-    {
-        for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+        if (Db->picnicTableTable->arr[i] != NULL)
         {
-            if (Db->picnicTableTable->arr[i] != NULL)
-            {
-                    free(Db->picnicTableTable->arr[i]->tabletype);
-                    free(Db->picnicTableTable->arr[i]->material);
-                    free(Db->picnicTableTable->arr[i]->structural);
-                    free(Db->picnicTableTable->arr[i]->street);
-                    free(Db->picnicTableTable->arr[i]->neighbourhoodName);
-                    free(Db->picnicTableTable->arr[i]->ward);
-                    free(Db->picnicTableTable->arr[i]->location);
-                    free(Db->picnicTableTable->arr[i]);
-            }
-        }
-        free(Db->picnicTableTable->arr);
-    }
-
-
-    if(Db->tableTypeTable != NULL)
-    {
-        //for (int i = 0; i < Db->tableTypeTable->capacity; i++)
-        //{
-            //if(Db->tableTypeTable->arr[i] != NULL)
-            //{
-            //    free(Db->tableTypeTable->arr[i]);
-            //}
-        //}
-        if(Db->tableTypeTable->arr != NULL)
-        {
-            free(Db->tableTypeTable->arr);
+            free(Db->picnicTableTable->arr[i]->tabletype);
+            free(Db->picnicTableTable->arr[i]->material);
+            free(Db->picnicTableTable->arr[i]->structural);
+            free(Db->picnicTableTable->arr[i]->street);
+            free(Db->picnicTableTable->arr[i]->neighbourhoodName);
+            free(Db->picnicTableTable->arr[i]->ward);
+            free(Db->picnicTableTable->arr[i]->latitude);
+            free(Db->picnicTableTable->arr[i]->longitude);
+            free(Db->picnicTableTable->arr[i]->location);
+            free(Db->picnicTableTable->arr[i]);
+            Db->picnicTableTable->arr[i] = NULL;
         }
     }
-
-    if(Db->surfaceMaterialTable != NULL)
-    {
-        if(Db->surfaceMaterialTable->arr != NULL)
-        {
-            free(Db->surfaceMaterialTable->arr);
-        }
-    }
-
-    if(Db->structuralMaterialTable != NULL)
-    {
-        if(Db->structuralMaterialTable->arr != NULL)
-        {
-            free(Db->structuralMaterialTable->arr);
-        }
-    }
-
-    if(Db->neighborhoodTable != NULL)
-    {
-        if(Db->neighborhoodTable->arr != NULL)
-        {
-            free(Db->neighborhoodTable->arr);
-        }
-    }
-
+    free(Db->picnicTableTable->arr);    
+    free(Db->tableTypeTable->arr);
+    free(Db->surfaceMaterialTable->arr);
+    free(Db->structuralMaterialTable->arr);
+    free(Db->neighborhoodTable->arr);
 
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
+
     free(Db);
 }
