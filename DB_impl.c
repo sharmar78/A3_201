@@ -13,6 +13,7 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
+#include <string.h> //For 'strcpy'
 
 
 Table resize(Table *table) {
@@ -26,10 +27,10 @@ int compressDB(char fileName[20]) {
 
     if (file == NULL) {
         printf("Failed to write into file.\n");
-        return;
+        return 0;
     }
 
-    fclose(fileName);
+    fclose(file);
 }
 
 Table *setupTable_impl()

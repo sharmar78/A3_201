@@ -16,7 +16,6 @@
 #include <string.h> //For 'strcpy'
 
 
-
 /* Declare a global DataBase variable*/
 /* That should be the only global variable declared*/
 /* DB.c should have the definition of this variable*/
@@ -114,8 +113,9 @@ void exportDB(char *fileName)
  */
 
 int countEntries(char *memberName, char * value) {
+    
     int count = 0; //Counter for members
-
+    /*
     switch (atoi(memberName)) {
         case 1:
             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
@@ -150,6 +150,7 @@ int countEntries(char *memberName, char * value) {
         case 6:
             break; //Not sure what array to check here
     }
+    */
     return count;
 }
 
