@@ -13,19 +13,26 @@
  */
 
 #include "DB.h"
+#include <stddef.h> //For 'size_t'
+
 
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
-Table resize();
+void resize();
 
-Table *setupTable_impl(); //setups up inner tables
+Table *setupTable_impl(int capacity); //setups up inner tables
 
 DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
 
-char *setStr_impl(char *value);
+char *setStr_impl(char *value); //adds fields to the individual table struct
 
 int compressDB(char fileName[20]);
+
+unsigned long hash(const char *s); //finds the hash index value
+
+int findIndex(Table *table, const char *key); //probes a table for an empty or identical key
+
 
 
 #endif

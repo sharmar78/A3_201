@@ -196,6 +196,7 @@ void reportByWard();
  */
 void freeDB()
 {
+    //FREE REG TABLE ELEMENTS
     for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
         if (Db->picnicTableTable->arr[i] != NULL)
@@ -213,17 +214,44 @@ void freeDB()
             Db->picnicTableTable->arr[i] = NULL;
         }
     }
-    free(Db->picnicTableTable->arr);    
-    free(Db->tableTypeTable->arr);
-    free(Db->surfaceMaterialTable->arr);
-    free(Db->structuralMaterialTable->arr);
-    free(Db->neighborhoodTable->arr);
 
+    //FREE HASH TABLE ELEMENTS
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+    {
+        if (Db->picnicTableTable->hasharr[i] != NULL)
+        {
+            free(Db->picnicTableTable->hasharr[i]->key);
+            Db->picnicTableTable->hasharr[i] = NULL;
+        }
+    }
+
+    //FREE TABLES ARRAYS
+    free(Db->picnicTableTable->arr); 
+    free(Db->picnicTableTable->hasharr); 
+    
+    free(Db->tableTypeTable->arr);
+    free(Db->tableTypeTable->hasharr); 
+
+    free(Db->surfaceMaterialTable->arr);
+    free(Db->surfaceMaterialTable->hasharr); 
+
+    free(Db->structuralMaterialTable->arr);
+    free(Db->structuralMaterialTable->hasharr); 
+
+    free(Db->neighborhoodTable->arr);
+    free(Db->neighborhoodTable->hasharr); 
+
+
+
+    //FREE TABLE STRUCTS
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
 
+
+    
+    //FREE DATABASE
     free(Db);
 }

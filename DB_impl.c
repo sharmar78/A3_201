@@ -13,13 +13,18 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
+#include <stddef.h> //For 'size_t'
 #include <string.h> //For 'strcpy'
 
 
-Table resize(Table *table) {
+
+
+void resize(Table *table) {
     int currSize = table->capacity;
     table = realloc(table, 2 * currSize);
 }
+
+
 
 int compressDB(char fileName[20]) {
 
@@ -27,13 +32,51 @@ int compressDB(char fileName[20]) {
 
     if (file == NULL) {
         printf("Failed to write into file.\n");
-        return 0;
+        return 1;
     }
 
     fclose(file);
+    return 0;
 }
 
-Table *setupTable_impl()
+
+
+/*djb2*/
+unsigned long hash(const char *s)
+{
+    unsigned long ret = 5381;
+    char c;
+
+    while ((c = *s++))
+    {
+        ret = (unsigned char)(c) + (33 * ret);
+    }
+    return ret;
+}
+
+
+
+/*
+*Probes a given table for a slot, either NULL or the existing key
+*/
+int findIndex(Table *table, const char *key)
+{
+    int keyIndex = hash(key) % table->capacity;
+    while (table->hasharr[keyIndex] != NULL && strcmp(table->hasharr[keyIndex]->key, key) != 0)
+        {   keyIndex++;                   
+            if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
+            {   keyIndex -= table->capacity;}
+        }
+    return keyIndex;
+}
+
+
+
+/*
+*helper function for database create
+*sets up the actual tables of the database
+*/
+Table *setupTable_impl(int capacity)
 {
     Table *table = malloc(sizeof(*table));
     if (table == NULL)
@@ -41,16 +84,25 @@ Table *setupTable_impl()
         return NULL;
     }
     table->numElems = 0;
-    table->capacity = 20;
+    table->capacity = capacity;
+
+    //SET UP REGULAR AND HASH TABLES
     table->arr = malloc(table->capacity * sizeof(*table->arr));
-    if (table->arr == NULL)
+    table->hasharr = malloc(table->capacity * sizeof(*table->hasharr));
+    if (table->arr == NULL || table->hasharr == NULL)
     {
+        free(table->arr);
+        free(table->hasharr);
         free(table);
         return NULL;
     }
+
+
+    //SET INDIVIDUAL ELEMENTS TO NULL
     for (int i = 0; i < table->capacity; i ++)
     {
         table->arr[i] = NULL;
+        table->hasharr[i] = NULL;
     }
     return table;
 }
@@ -67,40 +119,15 @@ DataBase *db_create_impl(void)
     }
 
     // set up tables
-    db->tableTypeTable = setupTable_impl();
-    db->surfaceMaterialTable = setupTable_impl();
-    db->structuralMaterialTable = setupTable_impl();
-    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL)
+    db->tableTypeTable = setupTable_impl(7);
+    db->surfaceMaterialTable = setupTable_impl(7);
+    db->structuralMaterialTable = setupTable_impl(7);
+    db->neighborhoodTable = setupTable_impl(7);
+    db->picnicTableTable = setupTable_impl(19);
+    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || db->neighborhoodTable == NULL ||db->picnicTableTable == NULL)
     {
+        freeDB();
         return NULL;
-    }
-
-    db->neighborhoodTable = malloc(sizeof(*db->neighborhoodTable));
-    db->neighborhoodTable->numElems = 0;
-    db->neighborhoodTable->capacity = 20;
-    db->neighborhoodTable->arr = malloc(db->neighborhoodTable->capacity * sizeof(*db->picnicTableTable->arr));
-    if (db->neighborhoodTable->arr == NULL)
-    {
-        free(db->neighborhoodTable);
-        return NULL;
-    }
-    for (int i = 0; i < db->neighborhoodTable->capacity; i ++)
-    {
-        db->neighborhoodTable->arr[i] = NULL;
-    }
-
-    db->picnicTableTable = malloc(sizeof(*db->picnicTableTable));
-    db->picnicTableTable->numElems = 0;
-    db->picnicTableTable->capacity = 20;
-    db->picnicTableTable->arr = malloc(db->picnicTableTable->capacity * sizeof(*db->picnicTableTable->arr));
-    if (db->picnicTableTable->arr == NULL)
-    {
-        free(db->picnicTableTable);
-        return NULL;
-    }
-    for (int i = 0; i < db->picnicTableTable->capacity; i ++)
-    {
-        db->picnicTableTable->arr[i] = NULL;
     }
     return db;
 }

@@ -41,23 +41,20 @@ typedef struct It{
     struct individual_table *picnicTable_next;
 } individual_table;
 
+typedef struct ht{
+    char *key;
+    int index;
+} hashInd;
+
 typedef struct table{
     int numElems;
     int capacity;
     individual_table ** arr;
+    hashInd ** hasharr;
 } Table;
 
-typedef struct Nt{
-    int numElems;
-    int capacity;
-    individual_table ** arr;
-} NeighbourhoodTable;
-
-typedef struct Pt{
-    int numElems;
-    int capacity;
-    individual_table ** arr;
-} PicnicTable;
+typedef Table NeighbourhoodTable;
+typedef Table PicnicTable;
 
 
 /*
@@ -72,7 +69,12 @@ typedef struct Pt{
  * only keep it typedef'ed to DataBase
  */
 typedef struct {
-    // You can add anything you see fit here
+    Table *tableHashInd;
+    Table *surfaceHashInd;
+    Table *structuralHashInd;
+    NeighbourhoodTable *neighborHashInd;
+    PicnicTable *picnicHashInd;
+
     Table *tableTypeTable;
     Table *surfaceMaterialTable;
     Table *structuralMaterialTable;
