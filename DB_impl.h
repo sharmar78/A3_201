@@ -17,7 +17,7 @@
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
-Table *resize(Table *table);
+PicnicTable *resize(PicnicTable *table);
 
 Table *setupTable_impl(); //setups up inner tables
 

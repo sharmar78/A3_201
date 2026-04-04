@@ -54,61 +54,66 @@ int main(int argc, char *argv[]){
     scanf("%d", &option);
     printf("\n");
 
-    //Exports the database using the function called exportDB()
-    if (option == 1) {
+    switch (option) {
 
-        printf("File name to export into: ");
-        scanf("%s", export);
-        exportDB(export); //idk if correct
+        //Exports the database file content into another file
+        case 1:
+            printf("File name to export into: ");
+            scanf("%s", export);
+            exportDB(export);
+            break;
 
-    } else if (option == 2) {   
-        
-        //Count entry in a database by selecting which option
-        //count entry;
-        //go through the table and print each occurence of the item
-        printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-        scanf("%s", memberCode);
-        printf("Enter Value: ");
-        scanf(" %[^\n]", value); //need the extra space cuz there is \n in memory from memberCode input
-        countEntries(memberCode, value);
+        //Prnts occurences of the value in the databse
+        case 2:
+            printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+            scanf("%s", memberCode);
 
-    } else if (option == 3) { 
-        
-        //Sorts
-        printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-        scanf("%d", &sortBy);
+            printf("Enter Value: ");
+            scanf(" %[^\n]", value);
 
-    } else if (option == 4) { 
+            countEntries(memberCode, value);
+            break;
 
-        printf("Enter a numerical table entry to edit: ");
-        scanf("%d", &numTabEntry);   
-        while (numTabEntry > 3 || numTabEntry < 0) {
+        //Sorts the db according to the given criteria, most likely using qsort()
+        case 3:
+            printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+            scanf("%d", &sortBy);
+            break;
+
+        //Edit a table entry
+        case 4:
+            printf("Enter a numerical table entry to edit: ");
+            scanf("%d", &numTabEntry);
+
+            while (numTabEntry > 3 || numTabEntry < 0) {
                 printf("Invalid entry. Enter a value between 0 and 3: ");
                 scanf("%d", &numTabEntry);
             }
-        printf("Enter member code (1.TT 2.SM 3.StM): ");
-        scanf("%d", &numTableEntry);
 
-        // printf("Enter Value: ");
-        // scanf("%s", &fileName);
-    } else if (option == 5) {     
+            printf("Enter member code (1.TT 2.SM 3.StM): ");
+            scanf("%d", &numTableEntry);
+            break;
 
-        //Reports
-        printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
-        scanf("%d", &critReport);
+        //Reports a criteria
+        case 5:
+            printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
+            scanf("%d", &critReport);
+            break;
 
-    //Compressing database into a file.
-    } else if (option == 6) {   
+        //Compresses the db into another file
+        case 6:
+            printf("Enter filename: ");
+            scanf("%s", fileName);
+            compressDB(fileName);
+            break;
 
-        printf("Enter filename: ");
-        scanf("%s", fileName);
-        compressDB(fileName);
+        //Exits the program by freein the allocated memory
+        case 7:
+            freeDB();
+            exit(0);
 
-    } else if (option == 7) {
-
-        freeDB();
-        exit(0);
-
+        //Invalid option
+        default:
+            printf("Invalid option. Try again.\n");
     }
-    return 0;
 }

@@ -32,6 +32,7 @@ DataBase *Db;
  * as the main picnicTableTable.
  */
 void importDB(char *fileName) {
+
     FILE *file = fopen(fileName, "r"); //pointer to csv file
     if (file == NULL)
     {
@@ -60,10 +61,15 @@ void importDB(char *fileName) {
         element->longitude = setStr_impl(strtok(NULL, ","));
         element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
+        //If picnic table is full increase the size of it.
+        if (Db->picnicTableTable->numElems >= Db->picnicTableTable->capacity) {
+            Db->picnicTableTable = resize(Db->picnicTableTable);
+        }
+
         //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
         Db->picnicTableTable->arr[count] = element;
         Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
-        count ++;
+        count++;
     }
     fclose(file);
 }
@@ -214,7 +220,7 @@ void freeDB()
 
     if(Db->picnicTableTable != NULL)
     {
-        for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+        for (int i = 0; i < Db->picnicTableTable->numElems; i++)
         {
             if (Db->picnicTableTable->arr[i] != NULL)
             {

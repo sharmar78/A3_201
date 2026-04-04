@@ -46,22 +46,20 @@ int cmpWard(const void *a, const void *b) {
 */
 
 //Double the capacity of a Table structure
-Table *resize(Table *table) {
-
-    //Get the capacity of the table and double it
+PicnicTable *resize(PicnicTable *table)
+{
     int newCapacity = table->capacity * 2;
 
-    //Realloc memory for the table.
-    Table *newTable = realloc(table, 2 * newCapacity);
+    table->arr = realloc(table->arr, newCapacity * sizeof(*table->arr));
 
-    //Check if realloc failed.
-    if (newTable == NULL) {
+    if (table->arr == NULL)
+    {
         return table;
     }
 
-    newTable->capacity = newCapacity;
+    table->capacity = newCapacity;
 
-    return newTable;
+    return table;
 }
 
 //Mostly putChar logic
@@ -88,6 +86,8 @@ void compressDB(char fToComp[20]) {
 
 //This count the entry of the given member.
 int countEntries(char *memberName, char * value) {
+
+    int count = 0;
 
     //Traverse the LL or array and once it encounter given member increase counter.
     printf("Given: %s\n", memberName);
