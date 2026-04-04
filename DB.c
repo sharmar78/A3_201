@@ -117,6 +117,7 @@ void exportDB(char *fileName)
 // int countEntries(char *memberName, char * value) {
 //     int count = 0; //Counter for members
 
+// <<<<<<< HEAD
 //     switch (atoi(memberName)) {
 //         case 1:
 //             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
@@ -127,6 +128,44 @@ void exportDB(char *fileName)
 // }
 
 
+// =======
+//     switch (atoi(memberName)) {
+//         case 1:
+//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
+//                 if (Db->tableTypeTable[i]->tabletype == value)
+//                     count++;
+//             }
+//         case 2:
+//             for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
+//                 if (Db->surfaceMaterialTable[i]->tabletype == value)
+//                     count++;
+//             }
+//         case 3:
+//             for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
+//                 if (Db->structuralMaterialTable[i]->tabletype == value)
+//                     count++;
+//             }
+//         case 4:
+//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+//                 if (Db->neighborhoodTable[i]->neighbourhoodID == value)
+//                     count++;
+//             }
+//         case 4:
+//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
+//                     count++;
+//             }
+//         case 5:
+//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
+//                     count++;
+//             }
+//         case 6:
+//             break; //Not sure what array to check here
+//     }
+//     return count;
+// }
+// >>>>>>> d003026a9b11131ebd95e4e40dbf05df36a9b614
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 
