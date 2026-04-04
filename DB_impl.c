@@ -64,18 +64,38 @@ Table *resize(Table *table) {
     return newTable;
 }
 
+//Mostly putChar logic
 void compressDB(char fToComp[20]) {
 
-    FILE *file = fopen(fToComp, "wb");
-
-    if (file == NULL) {
-        printf("Failed to write into file.\n");
+    //Open the file in binary code.
+    FILE *in = fopen(fToComp, "rb");
+    if (in == NULL) {
+        printf("Failed to read file.\n");
         return;
     }
 
-    fclose(file);
+    //Write binary code into the file.
+    FILE *out = fopen("zip.bin", "wb");
+
+    if (out == NULL) {
+        printf("Failed to write in file.\n");
+        return;
+    }
+
+    fclose(in);
+    fclose(out);
 }
 
+//This count the entry of the given member.
+int countEntries(char *memberName, char * value) {
+
+    //Traverse the LL or array and once it encounter given member increase counter.
+    printf("Given: %s\n", memberName);
+    printf("Given: %s\n", value);
+
+return 0;
+
+}
 Table *setupTable_impl()
 {
     Table *table = malloc(sizeof(*table));

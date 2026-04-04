@@ -43,8 +43,9 @@ int main(int argc, char *argv[]){
     int option;
     int sortBy;
     int numTabEntry;
-    int memberCode;
-    // char value; ???
+    char memberCode[10];
+    int numTableEntry;
+    char value[40];
     char fileName[20];
     int critReport;
     char export[20];
@@ -55,16 +56,30 @@ int main(int argc, char *argv[]){
 
     //Exports the database using the function called exportDB()
     if (option == 1) {
+
         printf("File name to export into: ");
         scanf("%s", export);
         exportDB(export); //idk if correct
-    } else if (option == 2) {   //Count entry in a database by selecting which option
+
+    } else if (option == 2) {   
+        
+        //Count entry in a database by selecting which option
         //count entry;
         //go through the table and print each occurence of the item
-    } else if (option == 3) { //Sorts
+        printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+        scanf("%s", memberCode);
+        printf("Enter Value: ");
+        scanf(" %[^\n]", value); //need the extra space cuz there is \n in memory from memberCode input
+        countEntries(memberCode, value);
+
+    } else if (option == 3) { 
+        
+        //Sorts
         printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
         scanf("%d", &sortBy);
+
     } else if (option == 4) { 
+
         printf("Enter a numerical table entry to edit: ");
         scanf("%d", &numTabEntry);   
         while (numTabEntry > 3 || numTabEntry < 0) {
@@ -72,20 +87,28 @@ int main(int argc, char *argv[]){
                 scanf("%d", &numTabEntry);
             }
         printf("Enter member code (1.TT 2.SM 3.StM): ");
-        scanf("%d", &memberCode);
+        scanf("%d", &numTableEntry);
+
         // printf("Enter Value: ");
         // scanf("%s", &fileName);
-    } else if (option == 5) {     //Reports
+    } else if (option == 5) {     
+
+        //Reports
         printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
         scanf("%d", &critReport);
+
     //Compressing database into a file.
     } else if (option == 6) {   
+
         printf("Enter filename: ");
         scanf("%s", fileName);
         compressDB(fileName);
+
     } else if (option == 7) {
+
         freeDB();
         exit(0);
+
     }
     return 0;
 }

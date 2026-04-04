@@ -23,8 +23,6 @@
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
 
-
-
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
  * DataBase with the corresponding dataset information. All five DataBase tables
