@@ -17,7 +17,7 @@
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
-Table resize();
+Table *resize(Table *table);
 
 Table *setupTable_impl(); //setups up inner tables
 
@@ -25,7 +25,9 @@ DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setup
 
 char *setStr_impl(char *value);
 
-int compressDB(char fileName[20]);
+void exportDB(char *fileName);
+
+void compressDB(char fToComp[20]);
 
 
 #endif

@@ -47,6 +47,7 @@ int main(int argc, char *argv[]){
     // char value; ???
     char fileName[20];
     int critReport;
+    char export[20];
 
     printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n");
     scanf("%d", &option);
@@ -54,8 +55,9 @@ int main(int argc, char *argv[]){
 
     //Exports the database using the function called exportDB()
     if (option == 1) {
-        printf("Export");
-        exportDB("export.csv"); //idk if correct
+        printf("File name to export into: ");
+        scanf("%s", export);
+        exportDB(export); //idk if correct
     } else if (option == 2) {   //Count entry in a database by selecting which option
         //count entry;
         //go through the table and print each occurence of the item

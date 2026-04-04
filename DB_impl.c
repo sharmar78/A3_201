@@ -13,23 +13,67 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
+#include <string.h>
 
 
-Table resize(Table *table) {
-    int currSize = table->capacity;
-    table = realloc(table, 2 * currSize);
+//compare table type
+
+/**
+int cmpTT(const void *a, const void *b) {
+
 }
 
-int compressDB(char fileName[20]) {
+//compare surface material
+int cmpSurMat(const void *a, const void *b) {
+    
+}
 
-    FILE *file = fopen(fileName, "wb");
+//Compare structural material
+int cmpStructMat(const void *a, const void *b) {
+    
+}
+
+//Compare neighbourhood name
+int cmpNN(const void *a, const void *b) {
+    
+}
+
+
+int cmpWard(const void *a, const void *b) {
+    
+}
+
+*/
+
+//Double the capacity of a Table structure
+Table *resize(Table *table) {
+
+    //Get the capacity of the table and double it
+    int newCapacity = table->capacity * 2;
+
+    //Realloc memory for the table.
+    Table *newTable = realloc(table, 2 * newCapacity);
+
+    //Check if realloc failed.
+    if (newTable == NULL) {
+        return table;
+    }
+
+    newTable->capacity = newCapacity;
+
+    return newTable;
+}
+
+void compressDB(char fToComp[20]) {
+
+    FILE *file = fopen(fToComp, "wb");
 
     if (file == NULL) {
         printf("Failed to write into file.\n");
         return;
     }
 
-    fclose(fileName);
+    fclose(file);
 }
 
 Table *setupTable_impl()

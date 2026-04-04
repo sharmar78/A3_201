@@ -114,19 +114,19 @@ void exportDB(char *fileName)
  *  6- Ward
  */
 
-int countEntries(char *memberName, char * value) {
-    int count = 0; //Counter for members
+// int countEntries(char *memberName, char * value) {
+//     int count = 0; //Counter for members
 
-    switch (atoi(memberName)) {
-        case 1:
-            for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-                if (Db->tableTypeTable[i]->tabletype == value)
-                    count++;
-            }
-    }
+//     switch (atoi(memberName)) {
+//         case 1:
+//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
+//                 if (Db->tableTypeTable[i]->tabletype == value)
+//                     count++;
+//             }
+//     }
+// }
 
 
-}
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 
