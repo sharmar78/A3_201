@@ -32,32 +32,27 @@ typedef struct It{
     char *latitude;
     char *longitude;
     char *location;
-
-    
-    struct individual_table *tableType_next;
-    struct individual_table *surfaceMaterial_next;
-    struct individual_table *structuralMaterial_next;
-    struct individual_table *neighborhood_next;
-    struct individual_table *picnicTable_next;
 } individual_table;
+
+typedef struct list_node{
+    individual_table *node;
+    struct list_node *next;
+} list_node;
+
+typedef struct ht{
+    char *key;
+    int index, count;
+} hashInd;
 
 typedef struct table{
     int numElems;
     int capacity;
-    individual_table ** arr;
+    list_node ** arr;
+    hashInd ** hasharr;
 } Table;
 
-typedef struct Nt{
-    int numElems;
-    int capacity;
-    individual_table ** arr;
-} NeighbourhoodTable;
-
-typedef struct Pt{
-    int numElems;
-    int capacity;
-    individual_table ** arr;
-} PicnicTable;
+typedef Table NeighbourhoodTable;
+typedef Table PicnicTable;
 
 
 /*
@@ -72,7 +67,6 @@ typedef struct Pt{
  * only keep it typedef'ed to DataBase
  */
 typedef struct {
-    // You can add anything you see fit here
     Table *tableTypeTable;
     Table *surfaceMaterialTable;
     Table *structuralMaterialTable;
