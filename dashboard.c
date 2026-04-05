@@ -21,6 +21,8 @@ int main(int argc, char *argv[]){
 
     /** 
 
+    /** 
+
     //Prints the arguments given
     for (int i = 0; i < argc; i++) {
         printf("argv[%d] = %s\n", i, argv[i]);
@@ -28,8 +30,13 @@ int main(int argc, char *argv[]){
 
     */
 
+    */
+
     Db = db_create_impl();
     importDB(argv[2]);
+    
+    
+    printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
     
     
     printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
@@ -42,7 +49,14 @@ int main(int argc, char *argv[]){
             Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
             Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
             Db->picnicTableTable->arr[i]->node->location);
+            Db->picnicTableTable->arr[i]->node->ID, Db->picnicTableTable->arr[i]->node->tabletype, 
+            Db->picnicTableTable->arr[i]->node->material, Db->picnicTableTable->arr[i]->node->structural,
+            Db->picnicTableTable->arr[i]->node->street, Db->picnicTableTable->arr[i]->node->neighbourhoodID,
+            Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
+            Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
+            Db->picnicTableTable->arr[i]->node->location);
     }
+    
     
 
     /*  //============================examples of how to access the tables======================================
@@ -80,6 +94,9 @@ int main(int argc, char *argv[]){
     char memberCode[10];
     int numTableEntry;
     char value[40];
+    char memberCode[10];
+    int numTableEntry;
+    char value[40];
     char fileName[20];
     int critReport;
     char export[20];
@@ -88,6 +105,38 @@ int main(int argc, char *argv[]){
     scanf("%d", &option);
     printf("\n");
 
+    switch (option) {
+
+        //Exports the database file content into another file
+        case 1:
+            printf("File name to export into: ");
+            scanf("%s", export);
+            exportDB(export);
+            break;
+
+        //Prnts occurences of the value in the databse
+        case 2:
+            printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+            scanf("%s", memberCode);
+
+            printf("Enter Value: ");
+            scanf(" %[^\n]", value);
+
+            countEntries(memberCode, value);
+            break;
+
+        //Sorts the db according to the given criteria, most likely using qsort()
+        case 3:
+            printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+            scanf("%d", &sortBy);
+            break;
+
+        //Edit a table entry
+        case 4:
+            printf("Enter a numerical table entry to edit: ");
+            scanf("%d", &numTabEntry);
+
+            while (numTabEntry > 3 || numTabEntry < 0) {
     switch (option) {
 
         //Exports the database file content into another file
@@ -158,3 +207,4 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
+
