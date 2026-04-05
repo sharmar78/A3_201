@@ -26,7 +26,8 @@ int main(int argc, char *argv[]){
 
     Db = db_create_impl();
     importDB(argv[2]);
-
+    
+    
     printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
     for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
@@ -38,6 +39,7 @@ int main(int argc, char *argv[]){
             Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
             Db->picnicTableTable->arr[i]->node->location);
     }
+    
 
     /*  //============================examples of how to access the tables======================================
     printf("\n");
