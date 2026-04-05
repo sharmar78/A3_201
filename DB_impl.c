@@ -13,102 +13,29 @@
 
 #include <stdio.h> //For `printf`.
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
-<<<<<<< HEAD
-#include <string.h>
-
-
-//compare table type
-
-/**
-int cmpTT(const void *a, const void *b) {
-
-}
-
-//compare surface material
-int cmpSurMat(const void *a, const void *b) {
-    
-}
-=======
 #include <stddef.h> //For 'size_t'
 #include <string.h> //For 'strcpy'
 
 
 
 
-void resize(Table *table) {
+PicnicTable *resize(PicnicTable *table) {
     int currSize = table->capacity;
     table = realloc(table, 2 * currSize);
 }
 
 
 
-int compressDB(char fileName[20]) {
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d
-
+void compressDB(char fToComp[20]);
 //Compare structural material
+
 int cmpStructMat(const void *a, const void *b) {
-    
-}
+    // if (file == NULL) {
+    //     printf("Failed to write into file.\n");
+    //     return 1;
+    // }
 
-<<<<<<< HEAD
-//Compare neighbourhood name
-int cmpNN(const void *a, const void *b) {
-    
-}
-
-
-int cmpWard(const void *a, const void *b) {
-    
-}
-
-*/
-
-//Double the capacity of the array (**arr).
-PicnicTable *resize(PicnicTable *table) {
-    int newCapacity = table->capacity * 2;
-
-    table->arr = realloc(table->arr, newCapacity * sizeof(*table->arr));
-
-    if (table->arr == NULL) {
-        return table;
-    }
-
-    table->capacity = newCapacity;
-
-    return table;
-}
-
-//Mostly putChar logic
-void compressDB(char fToComp[20]) {
-
-    //Open the file in binary code.
-    FILE *in = fopen(fToComp, "rb");
-    if (in == NULL) {
-        printf("Failed to read file.\n");
-        return;
-    }
-
-    //Write binary code into the file.
-    FILE *out = fopen("zip.bin", "wb");
-
-    if (out == NULL) {
-        printf("Failed to write in file.\n");
-        return;
-    }
-
-    fclose(in);
-    fclose(out);
-}
-
-
-Table *setupTable_impl()
-=======
-    if (file == NULL) {
-        printf("Failed to write into file.\n");
-        return 1;
-    }
-
-    fclose(file);
+    // fclose(file);
     return 0;
 }
 
@@ -215,7 +142,6 @@ void insertElement(Table *table, individual_table *element, char *key, int hashi
 *sets up the actual tables of the database
 */
 Table *setupTable_impl(int capacity)
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d
 {
     Table *table = malloc(sizeof(*table));
     if (table == NULL)
@@ -286,9 +212,5 @@ char *setStr_impl(char *value)
     }
     strcpy(field, value);
     return field;
-<<<<<<< HEAD
-}
-=======
 }
 //==================================================================================
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d

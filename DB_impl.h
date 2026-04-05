@@ -19,11 +19,7 @@
 #ifndef DB_IMPL_H
 #define DB_IMPL_H
 
-<<<<<<< HEAD
 PicnicTable *resize(PicnicTable *table);
-=======
-void resize();
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d
 
 
 void exportDB(char *fileName);

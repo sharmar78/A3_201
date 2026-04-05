@@ -30,14 +30,9 @@ int main(int argc, char *argv[]){
 
     Db = db_create_impl();
     importDB(argv[2]);
-<<<<<<< HEAD
-
-    /**
-=======
     
     
     printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d
     for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
         printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
@@ -73,7 +68,7 @@ int main(int argc, char *argv[]){
     {
         printf("ID: %d, Type: %s\n", i, Db->surfaceMaterialTable->arr[i]->node->material);
     }
-    */
+    
 
 
     //exportDB("output.txt");
@@ -155,9 +150,6 @@ int main(int argc, char *argv[]){
         default:
             printf("Invalid option. Try again.\n");
     }
-<<<<<<< HEAD
-}
-=======
     */
 
     freeDB();
@@ -166,4 +158,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
->>>>>>> 3cd64a76f1cc713b08b289bfe75dd1be686c524d

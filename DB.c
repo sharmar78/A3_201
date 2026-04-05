@@ -120,28 +120,29 @@ int countEntries(char *memberName, char *value) {
     
     for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
         if (strcmp(memberName, "1") == 0) {
-            if (strcmp(Db->picnicTableTable->arr[i]->tabletype, value) == 0) {
+            if (strcmp(Db->picnicTableTable->arr[i]->node->tabletype, value) == 0) {
                 count++;
             } 
         } else if (strcmp(memberName, "2") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->material, value) == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->material, value) == 0) {
                 count++;
             }
         } else if (strcmp(memberName, "3") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->structural, value) == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->structural, value) == 0) {
                 count++;
             }
         } else if (strcmp(memberName, "4") == 0) {
-            if(Db->picnicTableTable->arr[i]->neighbourhoodID == value) {
+            if(Db->picnicTableTable->arr[i]->node->neighbourhoodID == value) {
                 count++;
             }
         } else if (strcmp(memberName, "5") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->neighbourhoodName, value) == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->neighbourhoodName, value) == 0) {
                 count++;
             }
         } else if (strcmp(memberName, "6") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->ward, value) == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->ward, value) == 0) {
                 count++;
+            }
         }
     }
 
@@ -178,22 +179,22 @@ void editTableEntry(int tableID, char *memberName, char *value) {
     switch (atoi(memberName)) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
         case 1: // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-                if (Db->tableTypeTable->arr[i]->ID == tableID) {
-                    Db->tableTypeTable->arr[i]->tabletype = value;
+                if (Db->tableTypeTable->arr[i]->node->ID == tableID) {
+                    Db->tableTypeTable->arr[i]->node->tabletype = value;
                 }
             }
             break;
         case 2:
             for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
-                if (Db->surfaceMaterialTable->arr[i]->ID == tableID) {
-                    Db->surfaceMaterialTable->arr[i]->material = value;
+                if (Db->surfaceMaterialTable->arr[i]->node->ID == tableID) {
+                    Db->surfaceMaterialTable->arr[i]->node->material = value;
                 }
             }
             break;
         case 3:
             for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
-                if (Db->structuralMaterialTable->arr[i]->ID == tableID) {
-                    Db->structuralMaterialTable->arr[i]->structural = value;
+                if (Db->structuralMaterialTable->arr[i]->node->ID == tableID) {
+                    Db->structuralMaterialTable->arr[i]->node->structural = value;
                 }
             }
             break;
@@ -209,10 +210,10 @@ void editTableEntry(int tableID, char *memberName, char *value) {
 void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alphabetical order without modifying dB<<
     for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
         //The printf statement is incredibly long, if there is a smarter way of doing this, feel free to replace
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->ID, Db->neighborhoodTable->arr[i]->tabletype,
-        Db->neighborhoodTable->arr[i]->material, Db->neighborhoodTable->arr[i]->structural, Db->neighborhoodTable->arr[i]->street, 
-        Db->neighborhoodTable->arr[i]->neighbourhoodID, Db->neighborhoodTable->arr[i]->neighbourhoodName, Db->neighborhoodTable->arr[i]->ward, 
-        Db->neighborhoodTable->arr[i]->latitude, Db->neighborhoodTable->arr[i]->longitude, Db->neighborhoodTable->arr[i]->location);
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->node->ID, Db->neighborhoodTable->arr[i]->node->tabletype,
+        Db->neighborhoodTable->arr[i]->node->material, Db->neighborhoodTable->arr[i]->node->structural, Db->neighborhoodTable->arr[i]->node->street, 
+        Db->neighborhoodTable->arr[i]->node->neighbourhoodID, Db->neighborhoodTable->arr[i]->node->neighbourhoodName, Db->neighborhoodTable->arr[i]->node->ward, 
+        Db->neighborhoodTable->arr[i]->node->latitude, Db->neighborhoodTable->arr[i]->node->longitude, Db->neighborhoodTable->arr[i]->node->location);
     } //This is UNTESTED, not sure if it is correct syntax to break up a printf statement like this
 }
 
