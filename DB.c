@@ -118,12 +118,9 @@ void exportDB(char *fileName)
  *  6- Ward
  */
 int countEntries(char *memberName, char *value) {
-
     int count = 0;
     
     for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
-
-
         if (strcmp(memberName, "1") == 0) {
             if (strcmp(Db->picnicTableTable->arr[i]->tabletype, value) == 0) {
                 count++;
@@ -152,7 +149,6 @@ int countEntries(char *memberName, char *value) {
 
 } 
     printf("%s has occured %d times", value, count);
-
     return count;
 }
 
@@ -179,14 +175,47 @@ void sortByMember(char *memberName);
  * If the new value is not found in the existing tables, this value must be added to the 
  * corresponding table.
  */
-void editTableEntry(int tableID, char *memberName, char *value);
+void editTableEntry(int tableID, char *memberName, char *value) {
+    switch atoi(memberName) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
+        case 1: // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
+            for (int i = 0; i < Db->tableTypeTable->numElems) {
+                if (Db->tableTypeTable->arr[i]->ID == tableID) {
+                    Db->tableTypeTable->arr[i]->tabletype = value;
+                }
+            }
+            break;
+        case 2:
+            for (int i = 0; i < Db->surfaceMaterialTable->numElems) {
+                if (Db->surfaceMaterialTable->arr[i]->ID == tableID) {
+                    Db->surfaceMaterialTable->arr[i]->material = value;
+                }
+            }
+            break;
+        case 3:
+            for (int i = 0; i < Db->structuralMaterialTable->numElems) {
+                if (Db->structuralMaterialTable->arr[i]->ID == tableID) {
+                    Db->structuralMaterialTable->arr[i]->structural = value;
+                }
+            }
+            break;
+    }
+    return;
+}
 
 
 /*
  * print a listing of picnic tables grouped by neigbourhoods in ascending 
  * alphabetical order.
  */
-void reportByNeighbourhood();
+void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alphabetical order without modifying dB<<
+    for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+        //The printf statement is incredibly long, if there is a smarter way of doing this, feel free to replace
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->ID, Db->neighborhoodTable->arr[i]->tabletype,
+        Db->neighborhoodTable->arr[i]->material, Db->neighborhoodTable->arr[i]->structural, Db->neighborhoodTable->arr[i]->street, 
+        Db->neighborhoodTable->arr[i]->neighbourhoodID, Db->neighborhoodTable->arr[i]->neighbourhoodName, Db->neighborhoodTable->arr[i]->ward, 
+        Db->neighborhoodTable->arr[i]->latitude, Db->neighborhoodTable->arr[i]->longitude, Db->neighborhoodTable->arr[i]->location);
+    } //This is UNTESTED, not sure if it is correct syntax to break up a printf statement like this
+}
 
 /*
  * print a listing of picnic tables grouped by wards in ascending order.

@@ -16,4 +16,6 @@ split the line into category then copy or append to the linked list.
 - exportDB() will export the csv file and we will use "diff to check" if the output matches.
 - Makefile was made to make compilation faster.
 - We will be using qSort to sort the table.
+- Implemented editTableEntry(). editTableEntry() matches inputted number as member code
+with a table stored in database and then iterates through the array stored in that table.
 
