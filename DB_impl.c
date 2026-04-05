@@ -39,8 +39,7 @@ int compressDB(char fileName[20]) {
     return 0;
 }
 
-
-
+//===================INSERTING NODE FUNCTIONS=================================
 /*djb2*/
 unsigned long hash(const char *s)
 {
@@ -55,23 +54,89 @@ unsigned long hash(const char *s)
 }
 
 
-
-/*
-*Probes a given table for a slot, either NULL or the existing key
-*/
+/*Probes a given table for a slot, either NULL or the existing key*/
 int findIndex(Table *table, const char *key)
 {
     int keyIndex = hash(key) % table->capacity;
     while (table->hasharr[keyIndex] != NULL && strcmp(table->hasharr[keyIndex]->key, key) != 0)
-        {   keyIndex++;                   
-            if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
-            {   keyIndex -= table->capacity;}
-        }
+    {   keyIndex++;                   
+        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
+        {   keyIndex -= table->capacity;}
+    }
     return keyIndex;
 }
 
 
+/*insert into sub tables with material name or table type*/
+void insertbyType(Table *table, individual_table *element, char *key)
+{
+    int keyIndex = findIndex(table, key);
+    insertElement(table, element, key, keyIndex);
+}
 
+/*insert into main table with ID number*/
+void insertbyID(Table *table, individual_table *element, int ID)
+{
+    int keyIndex = ID % table->capacity;
+    char IDstr[10];
+    snprintf(IDstr, 9, "%d", ID);
+
+    char *key = malloc(strlen(IDstr) + 1);
+    if (key == NULL) {return;}
+    strcpy(key, IDstr);
+
+    while (table->hasharr[keyIndex] != NULL)
+    {   
+        keyIndex++;                   
+        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
+        {   keyIndex -= table->capacity;}
+    }
+    
+    insertElement(table, element, key, keyIndex);
+}
+
+
+/*
+* inserts the node into the desired table.
+* arguments
+* table: the target hash table
+* element: the unique table information node
+* hashindex: hashtable slot calculated after probing
+* key: ID or material type 
+*/
+void insertElement(Table *table, individual_table *element, char *key, int hashindex)
+{
+    if (table->hasharr[hashindex] == NULL) //empty slot in the table
+    {
+        hashInd *hashnode = malloc(sizeof(*hashnode));
+        hashnode->key = key;   //hashnode key points to the same key as inputted
+        hashnode->index = table->numElems;   //index for the ACTUAL table is amount of nodes currently in place. if it is the first element, index = 0. second element, index = 1...
+        hashnode->count = 1;   //first instance of this key
+        table->hasharr[hashindex] = hashnode;   //insert new entry into hashtable at the hashindex
+
+        list_node *head = malloc(sizeof(*head));  //create a bucket for the elements
+        head->node = element;      //bucket points to the inputted element 
+        head->next = NULL;         //bucket used for linked lists
+        table->arr[table->numElems] = head;  //insert bucket into actual table at respective index
+        table->numElems++;  //increment element count for the next index position and resizing calculation
+    }
+ 
+    else if (strcmp(table->hasharr[hashindex]->key, key) == 0) //key already exists in the table
+    {
+        table->hasharr[hashindex]->count++; //add more instances of this key to the total count
+
+        list_node *newhead = malloc(sizeof(*newhead));  //create a new bucket
+        newhead->node = element;   //store element 
+        newhead->next = table->arr[table->hasharr[hashindex]->index];  //new head's next points at old head in actual table
+        table->arr[table->hasharr[hashindex]->index] = newhead;  //insert head into actual list as first 
+
+    }
+}
+//==================================================================================
+
+
+
+//===================TABLE AND NODE SET UP FUNTIONS=================================
 /*
 *helper function for database create
 *sets up the actual tables of the database
@@ -97,7 +162,6 @@ Table *setupTable_impl(int capacity)
         return NULL;
     }
 
-
     //SET INDIVIDUAL ELEMENTS TO NULL
     for (int i = 0; i < table->capacity; i ++)
     {
@@ -122,7 +186,7 @@ DataBase *db_create_impl(void)
     db->tableTypeTable = setupTable_impl(7);
     db->surfaceMaterialTable = setupTable_impl(7);
     db->structuralMaterialTable = setupTable_impl(7);
-    db->neighborhoodTable = setupTable_impl(7);
+    db->neighborhoodTable = setupTable_impl(19);
     db->picnicTableTable = setupTable_impl(19);
     if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || db->neighborhoodTable == NULL ||db->picnicTableTable == NULL)
     {
@@ -139,8 +203,7 @@ DataBase *db_create_impl(void)
 */
 char *setStr_impl(char *value)
 {
-    if (value == NULL)
-    {
+    if (value == NULL){
         return NULL;
     }
     char *field = malloc(strlen(value) + 1);
@@ -150,3 +213,4 @@ char *setStr_impl(char *value)
     strcpy(field, value);
     return field;
 }
+//==================================================================================
