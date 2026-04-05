@@ -19,14 +19,19 @@
 
 int main(int argc, char *argv[]){
 
+    /** 
+
     //Prints the arguments given
     for (int i = 0; i < argc; i++) {
         printf("argv[%d] = %s\n", i, argv[i]);
     }
 
+    */
+
     Db = db_create_impl();
     importDB(argv[2]);
 
+    /**
     for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
         printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
@@ -37,6 +42,7 @@ int main(int argc, char *argv[]){
             Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
             Db->picnicTableTable->arr[i]->location);
     }
+    */
 
     exportDB("output.txt");
     

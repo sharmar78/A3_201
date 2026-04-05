@@ -45,15 +45,13 @@ int cmpWard(const void *a, const void *b) {
 
 */
 
-//Double the capacity of a Table structure
-PicnicTable *resize(PicnicTable *table)
-{
+//Double the capacity of the array (**arr).
+PicnicTable *resize(PicnicTable *table) {
     int newCapacity = table->capacity * 2;
 
     table->arr = realloc(table->arr, newCapacity * sizeof(*table->arr));
 
-    if (table->arr == NULL)
-    {
+    if (table->arr == NULL) {
         return table;
     }
 
@@ -84,18 +82,7 @@ void compressDB(char fToComp[20]) {
     fclose(out);
 }
 
-//This count the entry of the given member.
-int countEntries(char *memberName, char * value) {
 
-    int count = 0;
-
-    //Traverse the LL or array and once it encounter given member increase counter.
-    printf("Given: %s\n", memberName);
-    printf("Given: %s\n", value);
-
-return 0;
-
-}
 Table *setupTable_impl()
 {
     Table *table = malloc(sizeof(*table));

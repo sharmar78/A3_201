@@ -117,59 +117,44 @@ void exportDB(char *fileName)
  *  5- Neighborhood Name
  *  6- Ward
  */
+int countEntries(char *memberName, char *value) {
 
-// int countEntries(char *memberName, char * value) {
-//     int count = 0; //Counter for members
-
-// <<<<<<< HEAD
-//     switch (atoi(memberName)) {
-//         case 1:
-//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-//                 if (Db->tableTypeTable[i]->tabletype == value)
-//                     count++;
-//             }
-//     }
-// }
+    int count = 0;
+    
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
 
 
-// =======
-//     switch (atoi(memberName)) {
-//         case 1:
-//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-//                 if (Db->tableTypeTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 2:
-//             for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
-//                 if (Db->surfaceMaterialTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 3:
-//             for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
-//                 if (Db->structuralMaterialTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 4:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodID == value)
-//                     count++;
-//             }
-//         case 4:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
-//                     count++;
-//             }
-//         case 5:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
-//                     count++;
-//             }
-//         case 6:
-//             break; //Not sure what array to check here
-//     }
-//     return count;
-// }
-// >>>>>>> d003026a9b11131ebd95e4e40dbf05df36a9b614
+        if (strcmp(memberName, "1") == 0) {
+            if (strcmp(Db->picnicTableTable->arr[i]->tabletype, value) == 0) {
+                count++;
+            } 
+        } else if (strcmp(memberName, "2") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->material, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "3") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->structural, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "4") == 0) {
+            if(Db->picnicTableTable->arr[i]->neighbourhoodID == value) {
+                count++;
+            }
+        } else if (strcmp(memberName, "5") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->neighbourhoodName, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "6") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->ward, value) == 0) {
+                count++;
+        }
+    }
+
+} 
+    printf("%s has occured %d times", value, count);
+
+    return count;
+}
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 
