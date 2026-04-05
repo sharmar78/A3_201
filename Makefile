@@ -28,7 +28,7 @@ testDashboardBin:
 
 #Checks leaks
 valgrindDashboard: dashboard
-	valgrind --leak-check=full --track-origins=yes ./$^
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$^
 
 #Clean rule removes all .0 files
 clean:
