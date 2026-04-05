@@ -176,23 +176,23 @@ void sortByMember(char *memberName);
  * corresponding table.
  */
 void editTableEntry(int tableID, char *memberName, char *value) {
-    switch atoi(memberName) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
+    switch (atoi(memberName)) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
         case 1: // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
-            for (int i = 0; i < Db->tableTypeTable->numElems) {
+            for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
                 if (Db->tableTypeTable->arr[i]->ID == tableID) {
                     Db->tableTypeTable->arr[i]->tabletype = value;
                 }
             }
             break;
         case 2:
-            for (int i = 0; i < Db->surfaceMaterialTable->numElems) {
+            for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
                 if (Db->surfaceMaterialTable->arr[i]->ID == tableID) {
                     Db->surfaceMaterialTable->arr[i]->material = value;
                 }
             }
             break;
         case 3:
-            for (int i = 0; i < Db->structuralMaterialTable->numElems) {
+            for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
                 if (Db->structuralMaterialTable->arr[i]->ID == tableID) {
                     Db->structuralMaterialTable->arr[i]->structural = value;
                 }
