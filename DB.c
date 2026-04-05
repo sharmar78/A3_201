@@ -9,7 +9,6 @@
  */
 
 #include "DB.h"       /* Import the public database header. */
-
 #include "DB_impl.h"  /* Import the private database header */
 
 #include <stdio.h> //For `printf`.
@@ -17,13 +16,10 @@
 #include <string.h> //For 'strcpy'
 
 
-
 /* Declare a global DataBase variable*/
 /* That should be the only global variable declared*/
 /* DB.c should have the definition of this variable*/
 DataBase *Db;
-
-
 
 /*
  * Takes the name of a .csv file as parameter and creates and populates the
@@ -34,6 +30,7 @@ DataBase *Db;
  * as the main picnicTableTable.
  */
 void importDB(char *fileName) {
+
     FILE *file = fopen(fileName, "r"); //pointer to csv file
     if (file == NULL)
     {
@@ -44,7 +41,6 @@ void importDB(char *fileName) {
     char line[256] = {'\0'}; //one line from the csv file, 256 is arbitrary and inspired by windows file name limit
     fgets(line, sizeof(line), file); //initial call of fgets to skip header of csv file
 
-    int count = 0; //index of the table
     while (fgets(line, sizeof(line), file) != NULL) //read every line of the file
     {
         individual_table *element = malloc(sizeof(*element)); //setting up individial elements
@@ -62,10 +58,16 @@ void importDB(char *fileName) {
         element->longitude = setStr_impl(strtok(NULL, ","));
         element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
+        //If picnic table is full increase the size of it.
+        if (Db->picnicTableTable->numElems >= Db->picnicTableTable->capacity) {
+            Db->picnicTableTable = resize(Db->picnicTableTable);
+        }
+
         //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
-        Db->picnicTableTable->arr[count] = element;
-        Db->picnicTableTable->numElems++; //tracks total value for resizing, if needed
-        count ++;
+        insertbyID(Db->picnicTableTable, element, element->ID);
+        insertbyType(Db->tableTypeTable, element, element->tabletype);
+        insertbyType(Db->surfaceMaterialTable, element, element->material);
+        insertbyType(Db->structuralMaterialTable, element, element->structural);
     }
     fclose(file);
 }
@@ -89,12 +91,12 @@ void exportDB(char *fileName)
     for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
             fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
-                Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
-                Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
-                Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
-                Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
-                Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
-                Db->picnicTableTable->arr[i]->location);
+                Db->picnicTableTable->arr[i]->node->ID, Db->picnicTableTable->arr[i]->node->tabletype, 
+                Db->picnicTableTable->arr[i]->node->material, Db->picnicTableTable->arr[i]->node->structural,
+                Db->picnicTableTable->arr[i]->node->street, Db->picnicTableTable->arr[i]->node->neighbourhoodID,
+                Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
+                Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
+                Db->picnicTableTable->arr[i]->node->location);
     }
     fclose(file);
 }
@@ -113,59 +115,42 @@ void exportDB(char *fileName)
  *  5- Neighborhood Name
  *  6- Ward
  */
+int countEntries(char *memberName, char *value) {
+    int count = 0;
+    
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
+        if (strcmp(memberName, "1") == 0) {
+            if (strcmp(Db->picnicTableTable->arr[i]->node->tabletype, value) == 0) {
+                count++;
+            } 
+        } else if (strcmp(memberName, "2") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->material, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "3") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->structural, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "4") == 0) {
+            if(Db->picnicTableTable->arr[i]->node->neighbourhoodID == value) {
+                count++;
+            }
+        } else if (strcmp(memberName, "5") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->neighbourhoodName, value) == 0) {
+                count++;
+            }
+        } else if (strcmp(memberName, "6") == 0) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->ward, value) == 0) {
+                count++;
+            }
+        }
+    }
 
-// int countEntries(char *memberName, char * value) {
-//     int count = 0; //Counter for members
 
-// <<<<<<< HEAD
-//     switch (atoi(memberName)) {
-//         case 1:
-//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-//                 if (Db->tableTypeTable[i]->tabletype == value)
-//                     count++;
-//             }
-//     }
-// }
-
-
-// =======
-//     switch (atoi(memberName)) {
-//         case 1:
-//             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-//                 if (Db->tableTypeTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 2:
-//             for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
-//                 if (Db->surfaceMaterialTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 3:
-//             for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
-//                 if (Db->structuralMaterialTable[i]->tabletype == value)
-//                     count++;
-//             }
-//         case 4:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodID == value)
-//                     count++;
-//             }
-//         case 4:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
-//                     count++;
-//             }
-//         case 5:
-//             for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-//                 if (Db->neighborhoodTable[i]->neighbourhoodName == value)
-//                     count++;
-//             }
-//         case 6:
-//             break; //Not sure what array to check here
-//     }
-//     return count;
-// }
-// >>>>>>> d003026a9b11131ebd95e4e40dbf05df36a9b614
+    printf("%s has occured %d times", value, count);
+    
+    return count;
+}
 
 /*
  * Take the name of a member of the picnicTable entry as an argument 
@@ -190,14 +175,47 @@ void sortByMember(char *memberName);
  * If the new value is not found in the existing tables, this value must be added to the 
  * corresponding table.
  */
-void editTableEntry(int tableID, char *memberName, char *value);
+void editTableEntry(int tableID, char *memberName, char *value) {
+    switch (atoi(memberName)) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
+        case 1: // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
+            for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
+                if (Db->tableTypeTable->arr[i]->node->ID == tableID) {
+                    Db->tableTypeTable->arr[i]->node->tabletype = value;
+                }
+            }
+            break;
+        case 2:
+            for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
+                if (Db->surfaceMaterialTable->arr[i]->node->ID == tableID) {
+                    Db->surfaceMaterialTable->arr[i]->node->material = value;
+                }
+            }
+            break;
+        case 3:
+            for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
+                if (Db->structuralMaterialTable->arr[i]->node->ID == tableID) {
+                    Db->structuralMaterialTable->arr[i]->node->structural = value;
+                }
+            }
+            break;
+    }
+    return;
+}
 
 
 /*
  * print a listing of picnic tables grouped by neigbourhoods in ascending 
  * alphabetical order.
  */
-void reportByNeighbourhood();
+void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alphabetical order without modifying dB<<
+    for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
+        //The printf statement is incredibly long, if there is a smarter way of doing this, feel free to replace
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->node->ID, Db->neighborhoodTable->arr[i]->node->tabletype,
+        Db->neighborhoodTable->arr[i]->node->material, Db->neighborhoodTable->arr[i]->node->structural, Db->neighborhoodTable->arr[i]->node->street, 
+        Db->neighborhoodTable->arr[i]->node->neighbourhoodID, Db->neighborhoodTable->arr[i]->node->neighbourhoodName, Db->neighborhoodTable->arr[i]->node->ward, 
+        Db->neighborhoodTable->arr[i]->node->latitude, Db->neighborhoodTable->arr[i]->node->longitude, Db->neighborhoodTable->arr[i]->node->location);
+    } //This is UNTESTED, not sure if it is correct syntax to break up a printf statement like this
+}
 
 /*
  * print a listing of picnic tables grouped by wards in ascending order.
@@ -209,75 +227,63 @@ void reportByWard();
  */
 void freeDB()
 {
-    if (Db == NULL)
+    //FREE REG TABLE ELEMENTS
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
-        return;
-    }
-
-    if(Db->picnicTableTable != NULL)
-    {
-        for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+        if (Db->picnicTableTable->arr[i] != NULL)
         {
-            if (Db->picnicTableTable->arr[i] != NULL)
-            {
-                    free(Db->picnicTableTable->arr[i]->tabletype);
-                    free(Db->picnicTableTable->arr[i]->material);
-                    free(Db->picnicTableTable->arr[i]->structural);
-                    free(Db->picnicTableTable->arr[i]->street);
-                    free(Db->picnicTableTable->arr[i]->neighbourhoodName);
-                    free(Db->picnicTableTable->arr[i]->ward);
-                    free(Db->picnicTableTable->arr[i]->location);
-                    free(Db->picnicTableTable->arr[i]);
-            }
-        }
-        free(Db->picnicTableTable->arr);
-    }
-
-
-    if(Db->tableTypeTable != NULL)
-    {
-        //for (int i = 0; i < Db->tableTypeTable->capacity; i++)
-        //{
-            //if(Db->tableTypeTable->arr[i] != NULL)
-            //{
-            //    free(Db->tableTypeTable->arr[i]);
-            //}
-        //}
-        if(Db->tableTypeTable->arr != NULL)
-        {
-            free(Db->tableTypeTable->arr);
+            free(Db->picnicTableTable->arr[i]->node->tabletype);
+            free(Db->picnicTableTable->arr[i]->node->material);
+            free(Db->picnicTableTable->arr[i]->node->structural);
+            free(Db->picnicTableTable->arr[i]->node->street);
+            free(Db->picnicTableTable->arr[i]->node->neighbourhoodName);
+            free(Db->picnicTableTable->arr[i]->node->ward);
+            free(Db->picnicTableTable->arr[i]->node->latitude);
+            free(Db->picnicTableTable->arr[i]->node->longitude);
+            free(Db->picnicTableTable->arr[i]->node->location);
+            free(Db->picnicTableTable->arr[i]->node);
+            free(Db->picnicTableTable->arr[i]);
+            Db->picnicTableTable->arr[i] = NULL;
         }
     }
 
-    if(Db->surfaceMaterialTable != NULL)
+    //FREE HASH TABLE ELEMENTS
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
-        if(Db->surfaceMaterialTable->arr != NULL)
+        if (Db->picnicTableTable->hasharr[i] != NULL)
         {
-            free(Db->surfaceMaterialTable->arr);
+            free(Db->picnicTableTable->hasharr[i]->key);
+            Db->picnicTableTable->hasharr[i] = NULL;
         }
     }
 
-    if(Db->structuralMaterialTable != NULL)
-    {
-        if(Db->structuralMaterialTable->arr != NULL)
-        {
-            free(Db->structuralMaterialTable->arr);
-        }
-    }
+    //FREE TABLES ARRAYS
+    free(Db->picnicTableTable->arr); 
+    free(Db->picnicTableTable->hasharr); 
+    
+    free(Db->tableTypeTable->arr);
+    free(Db->tableTypeTable->hasharr); 
 
-    if(Db->neighborhoodTable != NULL)
-    {
-        if(Db->neighborhoodTable->arr != NULL)
-        {
-            free(Db->neighborhoodTable->arr);
-        }
-    }
+    free(Db->surfaceMaterialTable->arr);
+    free(Db->surfaceMaterialTable->hasharr); 
+
+    free(Db->structuralMaterialTable->arr);
+    free(Db->structuralMaterialTable->hasharr); 
+
+    free(Db->neighborhoodTable->arr);
+    free(Db->neighborhoodTable->hasharr); 
 
 
+
+    //FREE TABLE STRUCTS
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
+
+
+
+    //FREE DATABASE
     free(Db);
 }
