@@ -17,41 +17,11 @@
 #include <stdio.h>
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 
-    /** 
-
-    //Prints the arguments given
-    for (int i = 0; i < argc; i++) {
-        printf("argv[%d] = %s\n", i, argv[i]);
-    }
-
-    */
-
-    Db = db_create_impl();
-    importDB(argv[2]);
-
-    /**
-    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
-    {
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
-            Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
-            Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
-            Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
-            Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
-            Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
-            Db->picnicTableTable->arr[i]->location);
-    }
-    */
-
-    exportDB("output.txt");
-    
     int option;
     int sortBy;
     int numTabEntry;
-    char memberCode[10];
-    int numTableEntry;
-    char value[40];
     char memberCode[10];
     int numTableEntry;
     char value[40];
@@ -148,38 +118,6 @@ int main(int argc, char *argv[]){
             scanf("%d", &numTabEntry);
 
             while (numTabEntry > 3 || numTabEntry < 0) {
-    switch (option) {
-
-        //Exports the database file content into another file
-        case 1:
-            printf("File name to export into: ");
-            scanf("%s", export);
-            exportDB(export);
-            break;
-
-        //Prnts occurences of the value in the databse
-        case 2:
-            printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-            scanf("%s", memberCode);
-
-            printf("Enter Value: ");
-            scanf(" %[^\n]", value);
-
-            countEntries(memberCode, value);
-            break;
-
-        //Sorts the db according to the given criteria, most likely using qsort()
-        case 3:
-            printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-            scanf("%d", &sortBy);
-            break;
-
-        //Edit a table entry
-        case 4:
-            printf("Enter a numerical table entry to edit: ");
-            scanf("%d", &numTabEntry);
-
-            while (numTabEntry > 3 || numTabEntry < 0) {
                 printf("Invalid entry. Enter a value between 0 and 3: ");
                 scanf("%d", &numTabEntry);
             }
@@ -210,4 +148,5 @@ int main(int argc, char *argv[]){
         default:
             printf("Invalid option. Try again.\n");
     }
+    return 0;
 }
