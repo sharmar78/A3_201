@@ -17,35 +17,8 @@
 #include <stdio.h>
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 
-    /** 
-
-    //Prints the arguments given
-    for (int i = 0; i < argc; i++) {
-        printf("argv[%d] = %s\n", i, argv[i]);
-    }
-
-    */
-
-    Db = db_create_impl();
-    importDB(argv[2]);
-
-    /**
-    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
-    {
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
-            Db->picnicTableTable->arr[i]->ID, Db->picnicTableTable->arr[i]->tabletype, 
-            Db->picnicTableTable->arr[i]->material, Db->picnicTableTable->arr[i]->structural,
-            Db->picnicTableTable->arr[i]->street, Db->picnicTableTable->arr[i]->neighbourhoodID,
-            Db->picnicTableTable->arr[i]->neighbourhoodName, Db->picnicTableTable->arr[i]->ward,
-            Db->picnicTableTable->arr[i]->latitude, Db->picnicTableTable->arr[i]->longitude, 
-            Db->picnicTableTable->arr[i]->location);
-    }
-    */
-
-    exportDB("output.txt");
-    
     int option;
     int sortBy;
     int numTabEntry;
@@ -55,6 +28,59 @@ int main(int argc, char *argv[]){
     char fileName[20];
     int critReport;
     char export[20];
+
+    if (argc < 3) {
+        printf("Usage: %s <input> <file>\n", argv[0]);
+        return 1;
+    }
+
+    Db = db_create_impl();
+    importDB(argv[2]);
+    
+    printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
+    
+    printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
+
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n", 
+            Db->picnicTableTable->arr[i]->node->ID,
+            Db->picnicTableTable->arr[i]->node->tabletype,
+            Db->picnicTableTable->arr[i]->node->material,
+            Db->picnicTableTable->arr[i]->node->structural,
+            Db->picnicTableTable->arr[i]->node->street,
+            Db->picnicTableTable->arr[i]->node->neighbourhoodID,
+            Db->picnicTableTable->arr[i]->node->neighbourhoodName,
+            Db->picnicTableTable->arr[i]->node->ward,
+            Db->picnicTableTable->arr[i]->node->latitude,
+            Db->picnicTableTable->arr[i]->node->longitude,
+            Db->picnicTableTable->arr[i]->node->location);
+        }
+    
+    printf("\n");
+
+
+    /*  //============================examples of how to access the tables======================================
+    printf("\n");
+    
+    int index = findIndex(Db->tableTypeTable, Db->picnicTableTable->arr[7]->node->tabletype); //Round table entry
+    printf("Number of Round Tables: %d\n", Db->tableTypeTable->hasharr[index]->count); //Number of Round Tables: 1
+    int index2 = findIndex(Db->tableTypeTable, Db->picnicTableTable->arr[8]->node->tabletype); //Square table entry
+    printf("Number of Square Tables: %d\n", Db->tableTypeTable->hasharr[index2]->count); //Number of Round Tables: 9
+    for (int i = 0; i < Db->tableTypeTable->numElems; i++)
+    {
+        printf("ID: %d, Type: %s\n", i, Db->tableTypeTable->arr[i]->node->tabletype);
+    }
+    */
+
+    int index3 = findIndex(Db->surfaceMaterialTable, Db->picnicTableTable->arr[7]->node->material); //Metal table entry
+    printf("Number of Metal Surfaces: %d\n", Db->surfaceMaterialTable->hasharr[index3]->count); //Number of Metal Tables: 1
+    int index4 = findIndex(Db->surfaceMaterialTable, Db->picnicTableTable->arr[8]->node->material); //Square table entry
+    printf("Number of Wood Surfaces: %d\n", Db->surfaceMaterialTable->hasharr[index4]->count); //Number of Wood Tables: 10
+
+    for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
+        printf("ID: %d, Type: %s\n", i, Db->surfaceMaterialTable->arr[i]->node->material);
+    }
+
 
     printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n");
     scanf("%d", &option);
@@ -122,4 +148,5 @@ int main(int argc, char *argv[]){
         default:
             printf("Invalid option. Try again.\n");
     }
+    return 0;
 }
