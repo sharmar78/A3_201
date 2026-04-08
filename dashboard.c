@@ -66,21 +66,19 @@ int main(int argc, char *argv[]) {
     }
 
 */
-    char jack = 'z';
     while (loop) {
+        
         printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
-        while ((option = getc) != 1
-                || option != 2
-                || ) {
-            jack = getc(stdin);// Flushed invalid input
-            printf("%c ", jack);
-            if (jack == EOF || jack == '\n')
-            {
-                printf("Invalid option. Try again.\n");
-                printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
+        scanf("%d", &option);
 
-            }
+        //Scanf return 1 if successfull and 0 if not, therefore is scanf is not successful it will print invalid input
+        //then  it will remove all the character until new line, idea was proposed by Ardy RD. 
+        if (scanf("%d", &option) != 1) {
+            printf("Invalid input\n");
+            while (getchar() != '\n');
+            continue; //Once the OPTION not get the input it goes back at the top printing the loop again displaying the whole menu.
         }
+
         printf("\n");
 
         switch (option) {
