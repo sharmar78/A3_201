@@ -15,55 +15,93 @@
 #include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
 #include <stddef.h> //For 'size_t'
 #include <string.h> //For 'strcpy'
+#include <stdbool.h> //For `bool`.
 
 
-//Double the capacity of the array (**arr).
-PicnicTable *resize(PicnicTable *table) {
-    int newCapacity = table->capacity * 2;
+int compressDB(char fileName[20]) {
 
-    table->arr = realloc(table->arr, newCapacity * sizeof(*table->arr));
+    FILE *file = fopen(fileName, "wb");
 
-    if (table->arr == NULL) {
-        return table;
+    if (file == NULL) {
+        printf("Failed to write into file.\n");
+        return 1;
     }
 
-    table->capacity = newCapacity;
-
-    return table;
-}
-
-//Mostly putChar logic
-void compressDB(char fToComp[20]) {
-
-    //Open the file in binary code.
-    FILE *in = fopen(fToComp, "rb");
-    if (in == NULL) {
-        printf("Failed to read file.\n");
-        return;
-    }
-
-    //Write binary code into the file.
-    FILE *out = fopen("zip.bin", "wb");
-
-    if (out == NULL) {
-        printf("Failed to write in file.\n");
-        return;
-    }
-
-    fclose(in);
-    fclose(out);
-}
-
-//Compare structural material
-int cmpStructMat(const void *a, const void *b) {
-    // if (file == NULL) {
-    //     printf("Failed to write into file.\n");
-    //     return 1;
-    // }
-
-    // fclose(file);
+    fclose(file);
     return 0;
 }
+
+//===================RESIZING FUNTIONS=================================
+bool is_prime(int num)
+{
+    if (num <= 1) 
+    {   return false;}
+
+    for (int i = 2; i * i <= num; i++)  // 2 to root numbers(i) of 'num'; i * i = i^2 = num, so i = sqrt(num). avoids type conversion to double with sqrt() function. 
+    {   if (num % i == 0)  // any numbers that leave no remainder after dividing by root is not a prime number
+        return false;
+    }
+
+    return true;  // if this line is reached, its is a prime number
+}
+
+
+void resize(Table *table)
+{
+    int newSize = table->capacity * 2;
+    while (!is_prime(newSize)){
+        newSize++;
+    }
+    bool regTable = resizeTable(table, newSize);
+    bool hashTable = resizeHashtable(table, newSize);
+    if (!regTable || !hashTable){
+        printf("Rehashing failed. Table size not increased.");
+        return;
+    }
+    
+    table->capacity = newSize;
+}
+
+
+bool resizeTable(Table *table, int newSize) {
+    table->arr = realloc(table->arr, newSize * sizeof(*table->arr));
+    if (table->arr == NULL){
+        return false;
+    }
+    return true;
+}
+
+bool resizeHashtable(Table *table, int newSize) {
+    hashInd **newArr = malloc(newSize * sizeof(*newArr));
+    if (newArr == NULL){
+        return false;
+    }
+    for (int i = 0; i < table->capacity; i++) {   
+        newArr[i] = NULL;
+    }
+
+    for (int i = 0; i < table->capacity; i++) {
+        if (table->hasharr[i] != NULL){
+            int newHashInd = hash(table->hasharr[i]->key) % newSize;
+
+            while (newArr[newHashInd] != NULL){   
+                newHashInd++;                   
+                if (newHashInd >= newSize)  //wrap around if index number goes past the new table size
+                {   newHashInd -= newSize;}
+            }
+
+            newArr[newHashInd] = table->hasharr[i];
+        }
+    }
+
+    free(table->hasharr);
+    table->hasharr = newArr;
+
+    return true;
+}
+//==================================================================================
+
+
 
 //===================INSERTING NODE FUNCTIONS=================================
 /*djb2*/
@@ -77,6 +115,18 @@ unsigned long hash(const char *s)
         ret = (unsigned char)(c) + (33 * ret);
     }
     return ret;
+}
+
+char *convertInt_impl(int ID)
+{
+    char convertedInt[10];
+    snprintf(convertedInt, 9, "%d", ID);
+
+    char *key = malloc(strlen(convertedInt) + 1);
+    if (key == NULL) {return NULL;}
+    strcpy(key, convertedInt);
+
+    return key;
 }
 
 
@@ -96,6 +146,12 @@ int findIndex(Table *table, const char *key)
 /*insert into sub tables with material name or table type*/
 void insertbyType(Table *table, individual_table *element, char *key)
 {
+    int checkSize = table->numElems + 1;
+    if ((checkSize * 3) > (table->capacity * 2))
+    {
+        resize(table);
+    }
+
     int keyIndex = findIndex(table, key);
     insertElement(table, element, key, keyIndex);
 }
@@ -103,21 +159,14 @@ void insertbyType(Table *table, individual_table *element, char *key)
 /*insert into main table with ID number*/
 void insertbyID(Table *table, individual_table *element, int ID)
 {
-    int keyIndex = ID % table->capacity;
-    char IDstr[10];
-    snprintf(IDstr, 9, "%d", ID);
-
-    char *key = malloc(strlen(IDstr) + 1);
-    if (key == NULL) {return;}
-    strcpy(key, IDstr);
-
-    while (table->hasharr[keyIndex] != NULL)
-    {   
-        keyIndex++;                   
-        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
-        {   keyIndex -= table->capacity;}
+    int checkSize = table->numElems + 1;
+    if ((checkSize * 3) > (table->capacity * 2))
+    {
+        resize(table);
     }
-    
+
+    char *key = convertInt_impl(ID);
+    int keyIndex = findIndex(table, key);
     insertElement(table, element, key, keyIndex);
 }
 
@@ -239,3 +288,4 @@ char *setStr_impl(char *value)
     strcpy(field, value);
     return field;
 }
+//==================================================================================

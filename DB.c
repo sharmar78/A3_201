@@ -58,11 +58,6 @@ void importDB(char *fileName) {
         element->longitude = setStr_impl(strtok(NULL, ","));
         element->location = setStr_impl(strtok(NULL, "\n")); //NOTE: last field is not split by comma as there is one naturally in the field
 
-        //If picnic table is full increase the size of it.
-        if (Db->picnicTableTable->numElems >= Db->picnicTableTable->capacity) {
-            Db->picnicTableTable = resize(Db->picnicTableTable);
-        }
-
         //add the node to the pointers in tables. all pointers point to the same node for space efficiency.
         insertbyID(Db->picnicTableTable, element, element->ID);
         insertbyType(Db->tableTypeTable, element, element->tabletype);
@@ -147,7 +142,7 @@ int countEntries(char *memberName, char *value) {
     }
 
 
-    printf("%s has occured %d times", value, count);
+    printf("%s has occured %d times\n", value, count);
     
     return count;
 }
@@ -210,11 +205,13 @@ void editTableEntry(int tableID, char *memberName, char *value) {
 void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alphabetical order without modifying dB<<
     for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
         //The printf statement is incredibly long, if there is a smarter way of doing this, feel free to replace
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->node->ID, Db->neighborhoodTable->arr[i]->node->tabletype,
-        Db->neighborhoodTable->arr[i]->node->material, Db->neighborhoodTable->arr[i]->node->structural, Db->neighborhoodTable->arr[i]->node->street, 
-        Db->neighborhoodTable->arr[i]->node->neighbourhoodID, Db->neighborhoodTable->arr[i]->node->neighbourhoodName, Db->neighborhoodTable->arr[i]->node->ward, 
-        Db->neighborhoodTable->arr[i]->node->latitude, Db->neighborhoodTable->arr[i]->node->longitude, Db->neighborhoodTable->arr[i]->node->location);
-    } //This is UNTESTED, not sure if it is correct syntax to break up a printf statement like this
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->node->ID, 
+            Db->neighborhoodTable->arr[i]->node->tabletype, Db->neighborhoodTable->arr[i]->node->material, 
+            Db->neighborhoodTable->arr[i]->node->structural, Db->neighborhoodTable->arr[i]->node->street, 
+            Db->neighborhoodTable->arr[i]->node->neighbourhoodID, Db->neighborhoodTable->arr[i]->node->neighbourhoodName, 
+            Db->neighborhoodTable->arr[i]->node->ward, Db->neighborhoodTable->arr[i]->node->latitude, 
+            Db->neighborhoodTable->arr[i]->node->longitude, Db->neighborhoodTable->arr[i]->node->location);
+    } //This is UNTESTED, not sure if it is correct syntax to break up a printf call like this
 }
 
 /*
