@@ -9,6 +9,20 @@ Data Structure:
 - We decided to implement 5 arrays for this assignment
 and linked-list to append. Then we will use main class to access the elements from the table.
 
+so each table will basically have 2 tables
+the regular table where everything is in order
+and a hashtable for lookup
+
+main table 
+
+    uses ID as key
+    converts ID from int to char
+    hash char into a hash index
+    looks up the node with the key-value
+    value in this node is the index for the non-hashtable main table
+    arr[value] gives you your desired node's slot
+
+
 Progress: 
 - helper functions to create database, tables, and a node to contain the values of each table is made
 - implemented importDB() and exportDB() is then made. for importDB() we scan each line until "\0" and then 
