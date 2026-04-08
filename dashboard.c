@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[]) {
     int loop = 1; // Loop flag for checking options
-    int option;
+    int option = 8;
     int sortBy;
     int numTabEntry;
     char memberCode[10];
@@ -66,9 +66,21 @@ int main(int argc, char *argv[]) {
     }
 
 */
+    char jack = 'z';
     while (loop) {
         printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
-        scanf("%d", &option);
+        while ((option = getc) != 1
+                || option != 2
+                || ) {
+            jack = getc(stdin);// Flushed invalid input
+            printf("%c ", jack);
+            if (jack == EOF || jack == '\n')
+            {
+                printf("Invalid option. Try again.\n");
+                printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
+
+            }
+        }
         printf("\n");
 
         switch (option) {
