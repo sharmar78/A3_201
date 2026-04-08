@@ -7,15 +7,15 @@
 CC = gcc
 CFLAGS= -Wall -g -std=c99
 
+#Compile dashboard
+dashboard: dashboard.c DB.o DB.h DB_impl.o DB_impl.h
+	$(CC) $(CFLAGS) $^ -o $@
+
 DB.o: DB.c DB.h
 	$(CC) $(CFLAGS) -c $<
 
 DB_impl.o: DB_impl.c DB.h DB_impl.h
 	$(CC) $(CFLAGS) -c DB_impl.c
-
-#Compile dashboard
-dashboard: dashboard.c DB.o DB.h DB_impl.o DB_impl.h
-	$(CC) $(CFLAGS) $^ -o $@
 
 #Unsure
 testDashboardCsv:

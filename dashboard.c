@@ -18,7 +18,7 @@
 
 
 int main(int argc, char *argv[]) {
-
+    int loop = 1; // Loop flag for checking options
     int option;
     int sortBy;
     int numTabEntry;
@@ -66,71 +66,74 @@ int main(int argc, char *argv[]) {
     }
 
 */
-    printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n");
-    scanf("%d", &option);
-    printf("\n");
+    while (loop) {
+        printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
+        scanf("%d", &option);
+        printf("\n");
 
-    switch (option) {
+        switch (option) {
+            //Exports the database file content into another file
+            case 1:
+                printf("File name to export into: ");
+                scanf("%s", export);
+                exportDB(export);
+                break;
 
-        //Exports the database file content into another file
-        case 1:
-            printf("File name to export into: ");
-            scanf("%s", export);
-            exportDB(export);
-            break;
+            //Prnts occurences of the value in the databse
+            case 2:
+                printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+                scanf("%s", memberCode);
 
-        //Prnts occurences of the value in the databse
-        case 2:
-            printf("Enter member code (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-            scanf("%s", memberCode);
+                printf("Enter Value: ");
+                scanf(" %[^\n]", value);
 
-            printf("Enter Value: ");
-            scanf(" %[^\n]", value);
+                countEntries(memberCode, value);
+                break;
 
-            countEntries(memberCode, value);
-            break;
+            //Sorts the db according to the given criteria, most likely using qsort()
+            case 3:
+                printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
+                scanf("%d", &sortBy);
+                break;
 
-        //Sorts the db according to the given criteria, most likely using qsort()
-        case 3:
-            printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-            scanf("%d", &sortBy);
-            break;
-
-        //Edit a table entry
-        case 4:
-            printf("Enter a numerical table entry to edit: ");
-            scanf("%d", &numTabEntry);
-
-            while (numTabEntry > 3 || numTabEntry < 0) {
-                printf("Invalid entry. Enter a value between 0 and 3: ");
+            //Edit a table entry
+            case 4:
+                printf("Enter a numerical table entry to edit: ");
                 scanf("%d", &numTabEntry);
-            }
 
-            printf("Enter member code (1.TT 2.SM 3.StM): ");
-            scanf("%d", &numTableEntry);
-            break;
+                while (numTabEntry > 3 || numTabEntry < 0) {
+                    printf("Invalid entry. Enter a value between 0 and 3: ");
+                    scanf("%d", &numTabEntry);
+                }
 
-        //Reports a criteria
-        case 5:
-            printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
-            scanf("%d", &critReport);
-            break;
+                printf("Enter member code (1.TT 2.SM 3.StM): ");
+                scanf("%d", &numTableEntry);
+                break;
 
-        //Compresses the db into another file
-        case 6:
-            printf("Enter filename: ");
-            scanf("%s", fileName);
-            compressDB(fileName);
-            break;
+            //Reports a criteria
+            case 5:
+                printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
+                scanf("%d", &critReport);
+                break;
 
-        //Exits the program by freein the allocated memory
-        case 7:
-            freeDB();
-            exit(0);
+            //Compresses the db into another file
+            case 6:
+                printf("Enter filename: ");
+                scanf("%s", fileName);
+                compressDB(fileName);
+                break;
 
-        //Invalid option
-        default:
-            printf("Invalid option. Try again.\n");
+            //Exits the program by freein the allocated memory
+            case 7:
+                loop = 0;
+                freeDB();
+                exit(0);
+
+            //Invalid option
+            default:
+                printf("Invalid option. Try again.\n");
+        }
     }
+    
     return 0;
 }

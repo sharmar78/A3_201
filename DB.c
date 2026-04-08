@@ -132,7 +132,7 @@ int countEntries(char *memberName, char *value) {
                 count++;
             }
         } else if (strcmp(memberName, "4") == 0) {
-            if(Db->picnicTableTable->arr[i]->node->neighbourhoodID == value) {
+            if(Db->picnicTableTable->arr[i]->node->neighbourhoodID == atoi(value)) {
                 count++;
             }
         } else if (strcmp(memberName, "5") == 0) {
