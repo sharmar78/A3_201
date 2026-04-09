@@ -17,7 +17,12 @@
 #include <string.h> //For 'strcpy'
 #include <stdbool.h> //For `bool`.
 
-
+/**
+ * This function comresses the file and exports it into another file
+ * We can use the logic used in A1 in the squeeze.c program
+ * Each caracter occuring more than once will be counted and then removed then when new letter happens
+ * it resets count, eg. Hello -> hel2o
+ */
 int compressDB(char fileName[20]) {
 
     FILE *file = fopen(fileName, "wb");
@@ -32,12 +37,10 @@ int compressDB(char fileName[20]) {
 }
 
 //===================RESIZING FUNTIONS=================================
-bool is_prime(int num)
-{
-    if (num <= 1) 
-    {   return false;}
+bool is_prime(int num) {
+    if (num <= 1) {   return false;}
 
-    for (int i = 2; i * i <= num; i++)  // 2 to root numbers(i) of 'num'; i * i = i^2 = num, so i = sqrt(num). avoids type conversion to double with sqrt() function. 
+    for (int i = 2; i * i <= num; i++)  // 2 to root numbers(i) of 'num'; i * i = i^2 = num, so i = sqrt(num). avoids type conversion to double with sqrt() function.  
     {   if (num % i == 0)  // any numbers that leave no remainder after dividing by root is not a prime number
         return false;
     }
@@ -45,15 +48,18 @@ bool is_prime(int num)
     return true;  // if this line is reached, its is a prime number
 }
 
-
-void resize(Table *table)
-{
+/**
+ * This function resizes the hashtable and the regular table once it is full.
+ */
+void resize(Table *table) {
     int newSize = table->capacity * 2;
-    while (!is_prime(newSize)){
+    while (!is_prime(newSize)) {
         newSize++;
     }
+
     bool regTable = resizeTable(table, newSize);
     bool hashTable = resizeHashtable(table, newSize);
+
     if (!regTable || !hashTable){
         printf("Rehashing failed. Table size not increased.");
         return;
@@ -62,20 +68,28 @@ void resize(Table *table)
     table->capacity = newSize;
 }
 
-
+/**
+ * Reallocates memory 
+ */
 bool resizeTable(Table *table, int newSize) {
+
     table->arr = realloc(table->arr, newSize * sizeof(*table->arr));
+
     if (table->arr == NULL){
         return false;
     }
     return true;
 }
 
+
 bool resizeHashtable(Table *table, int newSize) {
+
     hashInd **newArr = malloc(newSize * sizeof(*newArr));
+
     if (newArr == NULL){
         return false;
     }
+    
     for (int i = 0; i < table->capacity; i++) {   
         newArr[i] = NULL;
     }
@@ -89,7 +103,6 @@ bool resizeHashtable(Table *table, int newSize) {
                 if (newHashInd >= newSize)  //wrap around if index number goes past the new table size
                 {   newHashInd -= newSize;}
             }
-
             newArr[newHashInd] = table->hasharr[i];
         }
     }
@@ -104,9 +117,11 @@ bool resizeHashtable(Table *table, int newSize) {
 
 
 //===================INSERTING NODE FUNCTIONS=================================
-/*djb2*/
-unsigned long hash(const char *s)
-{
+
+/**
+ * Implemented the djb2 hashing algorithm.
+ */
+unsigned long hash(const char *s) {
     unsigned long ret = 5381;
     char c;
 

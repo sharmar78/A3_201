@@ -13,8 +13,6 @@
 #ifndef DB_H
 #define DB_H
 
-
-
 /*
  * DECLARE AND TYPEDEF HERE THE STRUCTS Table, NeighbourhoodTable, AND PicnicTable
  * WHICH WILL BE FIELDS IN THE STRUCT DataBase BELOW. YOU MAY DECLARE ADDITIONAL

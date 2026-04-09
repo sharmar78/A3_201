@@ -18,6 +18,7 @@
 
 
 int main(int argc, char *argv[]) {
+
     int loop = 1; // Loop flag for checking options
     int option = 8;
     int sortBy;
@@ -37,40 +38,10 @@ int main(int argc, char *argv[]) {
     Db = db_create_impl();
     importDB(argv[2]);
     
-    printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
-    
-    printf("Capacity of picnic table: %d\n", Db->picnicTableTable->capacity);
-
-
-      //============================examples of how to access the tables======================================
-    printf("\n");
-    
-    /**
-    int index = findIndex(Db->tableTypeTable, Db->picnicTableTable->arr[7]->node->tabletype); //Round table entry
-    printf("Number of Round Tables: %d\n", Db->tableTypeTable->hasharr[index]->count); //Number of Round Tables: 1
-    int index2 = findIndex(Db->tableTypeTable, Db->picnicTableTable->arr[8]->node->tabletype); //Square table entry
-    printf("Number of Square Tables: %d\n", Db->tableTypeTable->hasharr[index2]->count); //Number of Round Tables: 9
-
-    for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
-        printf("ID: %d, Type: %s\n", i, Db->tableTypeTable->arr[i]->node->tabletype);
-    }
-    
-
-    int index3 = findIndex(Db->surfaceMaterialTable, Db->picnicTableTable->arr[7]->node->material); //Metal table entry
-    printf("Number of Metal Surfaces: %d\n", Db->surfaceMaterialTable->hasharr[index3]->count); //Number of Metal Tables: 1
-    int index4 = findIndex(Db->surfaceMaterialTable, Db->picnicTableTable->arr[8]->node->material); //Square table entry
-    printf("Number of Wood Surfaces: %d\n", Db->surfaceMaterialTable->hasharr[index4]->count); //Number of Wood Tables: 10
-
-    for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
-        printf("ID: %d, Type: %s\n", i, Db->surfaceMaterialTable->arr[i]->node->material);
-    }
-
-*/
     while (loop) {
         
         printf("1. Export Database\n2. Count Entries\n3. Sort By\n4. Edit Entry\n5. Report\n6. Compress database\n7. Exit\n\noption: ");
-        scanf("%d", &option);
-
+   
         //Scanf return 1 if successfull and 0 if not, therefore is scanf is not successful it will print invalid input
         //then  it will remove all the character until new line, idea was proposed by Ardy RD. 
         if (scanf("%d", &option) != 1) {
