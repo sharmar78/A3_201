@@ -171,8 +171,10 @@ void sortByMember(char *memberName);
  * corresponding table.
  */
 void editTableEntry(int tableID, char *memberName, char *value) {
-    switch (atoi(memberName)) { // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
-        case 1: // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
+    switch (atoi(memberName)) { 
+        // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
+        // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
+        case 1: 
             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
                 if (Db->tableTypeTable->arr[i]->node->ID == tableID) {
                     Db->tableTypeTable->arr[i]->node->tabletype = value;
@@ -217,7 +219,9 @@ void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alpha
 /*
  * print a listing of picnic tables grouped by wards in ascending order.
  */
-void reportByWard();
+void reportByWard(int critReport) {
+
+}
 
 /*
  * Frees all dynamic memory associated with each table upon exit. 

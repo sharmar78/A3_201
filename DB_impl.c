@@ -25,14 +25,35 @@
  */
 int compressDB(char fileName[20]) {
 
-    FILE *file = fopen(fileName, "wb");
+    FILE *in = fopen("PicnicTable.csv", "r");
+    FILE *out = fopen(fileName, "w");
 
-    if (file == NULL) {
-        printf("Failed to write into file.\n");
+    if (in == NULL || out == NULL) {
+        printf("File error.\n");
         return 1;
     }
 
-    fclose(file);
+    int curr;
+    int prev = EOF;
+    int count = 0;
+
+    while ((curr = fgetc(in)) != EOF) {
+        if (curr == prev) {
+            count++;
+        } else {
+            if (prev != EOF) {
+                fputc(prev, out);
+                if (count > 1) {
+                    fprintf(out, "%d", count);
+                }
+            }
+            prev = curr;
+            count = 1;
+        }
+    }
+
+    fclose(in);
+    fclose(out);
     return 0;
 }
 

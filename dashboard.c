@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
             case 5:
                 printf("Enter a criteria to report by (1. Neighborhood 2. Ward): ");
                 scanf("%d", &critReport);
+                reportByWard(critReport);
                 break;
 
             //Compresses the db into another file
