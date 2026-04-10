@@ -56,6 +56,7 @@ int main(int argc, char *argv[]) {
             case 1:
                 printf("File name to export into: ");
                 scanf("%s", export);
+                
                 exportDB(export);
                 break;
 
