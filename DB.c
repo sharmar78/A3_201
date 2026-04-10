@@ -64,6 +64,9 @@ void importDB(char *fileName) {
         insertbyType(Db->surfaceMaterialTable, element, element->material);
         insertbyType(Db->structuralMaterialTable, element, element->structural);
         insertbyID(Db->neighborhoodTable, element, element->neighbourhoodID);
+
+        insertbyType(Db->countWard, element, element->ward);
+        insertbyType(Db->countNN, element, element->neighbourhoodName);
     }
     fclose(file);
 }
@@ -83,17 +86,27 @@ void exportDB(char *fileName)
         return;
     }
 
+    int i = 0; //the last line cannot have a new line, so this prints all but the last line
     fprintf(file, "Id,Table Type,Surface Material,Structural Material,Street / Avenue,Neighbourhood Id,Neighbourhood Name,Ward,Latitude,Longitude,Location\n");
-    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    while(i < Db->picnicTableTable->numElems - 1)
     {
-            fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
-                Db->picnicTableTable->arr[i]->node->ID, Db->picnicTableTable->arr[i]->node->tabletype, 
-                Db->picnicTableTable->arr[i]->node->material, Db->picnicTableTable->arr[i]->node->structural,
-                Db->picnicTableTable->arr[i]->node->street, Db->picnicTableTable->arr[i]->node->neighbourhoodID,
-                Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
-                Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
-                Db->picnicTableTable->arr[i]->node->location);
+        fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s\n", 
+            Db->picnicTableTable->arr[i]->node->ID, Db->picnicTableTable->arr[i]->node->tabletype, 
+            Db->picnicTableTable->arr[i]->node->material, Db->picnicTableTable->arr[i]->node->structural,
+            Db->picnicTableTable->arr[i]->node->street, Db->picnicTableTable->arr[i]->node->neighbourhoodID,
+            Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
+            Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
+            Db->picnicTableTable->arr[i]->node->location);
+        
+        i ++;
     }
+    fprintf(file, "%d,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s",  //print the last line
+    Db->picnicTableTable->arr[i]->node->ID, Db->picnicTableTable->arr[i]->node->tabletype, 
+    Db->picnicTableTable->arr[i]->node->material, Db->picnicTableTable->arr[i]->node->structural,
+    Db->picnicTableTable->arr[i]->node->street, Db->picnicTableTable->arr[i]->node->neighbourhoodID,
+    Db->picnicTableTable->arr[i]->node->neighbourhoodName, Db->picnicTableTable->arr[i]->node->ward,
+    Db->picnicTableTable->arr[i]->node->latitude, Db->picnicTableTable->arr[i]->node->longitude, 
+    Db->picnicTableTable->arr[i]->node->location);
     fclose(file);
 }
 
@@ -115,34 +128,26 @@ void exportDB(char *fileName)
 int countEntries(char *memberName, char * value)  {
     int count = 0;
     
-    for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
-        if (strcmp(memberName, "1") == 0) {
-            if (strcmp(Db->picnicTableTable->arr[i]->node->tabletype, value) == 0) {
-                count++;
-            } 
-        } else if (strcmp(memberName, "2") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->node->material, value) == 0) {
-                count++;
-            }
-        } else if (strcmp(memberName, "3") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->node->structural, value) == 0) {
-                count++;
-            }
-        } else if (strcmp(memberName, "4") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->node->neighbourhoodID, value) == 0) {
-                count++;
-            }
-        } else if (strcmp(memberName, "5") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->node->neighbourhoodName, value) == 0) {
-                count++;
-            }
-        } else if (strcmp(memberName, "6") == 0) {
-            if(strcmp(Db->picnicTableTable->arr[i]->node->ward, value) == 0) {
-                count++;
-        }
+    if (strcmp(memberName, "1") == 0) {
+        int TTInd = findIndex(Db->tableTypeTable, value);
+        count = Db->tableTypeTable->hasharr[TTInd]->count;
+    } else if (strcmp(memberName, "2") == 0) {
+        int SMInd = findIndex(Db->surfaceMaterialTable, value);
+        count = Db->surfaceMaterialTable->hasharr[SMInd]->count;
+    } else if (strcmp(memberName, "3") == 0) {
+        int StMInd = findIndex(Db->structuralMaterialTable, value);
+        count = Db->structuralMaterialTable->hasharr[StMInd]->count;
+    } else if (strcmp(memberName, "4") == 0) {
+        int NIDInd = findIndex(Db->neighborhoodTable, value);
+        count = Db->neighborhoodTable->hasharr[NIDInd]->count;
+    } else if (strcmp(memberName, "5") == 0) {
+        int NNInd = findIndex(Db->countNN, value);
+        count = Db->countNN->hasharr[NNInd]->count;
+    } else if (strcmp(memberName, "6") == 0) {
+        int WardInd = findIndex(Db->countWard, value);
+        count = Db->countWard->hasharr[WardInd]->count;
     }
-
-} 
+    
     printf("%s has occured %d times", value, count);
     return count;
 }
@@ -157,7 +162,32 @@ int countEntries(char *memberName, char * value)  {
  *   4- Neighborhood Name
  *   5- Ward
  */
-void sortByMember(char *memberName);
+void sortByMember(char *memberName){    
+    if (strcmp(memberName, "1") == 0) {
+        qsort(Db->picnicTableTable->arr, Db->picnicTableTable->numElems, sizeof(list_node *), compare_TT);
+        printf("DB exported to table_type.csv to verify\n");
+        exportDB("table_type.csv");
+    } else if (strcmp(memberName, "2") == 0) {
+        qsort(Db->picnicTableTable->arr, Db->picnicTableTable->numElems, sizeof(list_node *), compare_SM);    
+        printf("DB exported to surface_material.csv to verify\n");
+        exportDB("surface_material.csv");
+    } else if (strcmp(memberName, "3") == 0) {
+        qsort(Db->picnicTableTable->arr, Db->picnicTableTable->numElems, sizeof(list_node *), compare_StM);
+        printf("DB exported to structural_material.csv to verify\n");
+        exportDB("structural_material.csv");
+    } else if (strcmp(memberName, "4") == 0) {
+        qsort(Db->picnicTableTable->arr, Db->picnicTableTable->numElems, sizeof(list_node *), compare_NN);
+        printf("DB exported to neighbourhood_name.csv to verify\n");    
+        exportDB("neighbourhood_name.csv");
+    } else if (strcmp(memberName, "5") == 0) {
+        qsort(Db->picnicTableTable->arr, Db->picnicTableTable->numElems, sizeof(list_node *), compare_Ward);  
+        printf("DB exported to ward.csv to verify\n");    
+        exportDB("ward.csv");  
+    }
+    
+    updateHashValues(Db->picnicTableTable);
+    return;
+}
 
 /*
  * Take a tableID, the name of a member of the picnicTable entry and a value for that 
@@ -274,8 +304,13 @@ void freeDB()
     free(Db->neighborhoodTable->arr);
     free(Db->neighborhoodTable->hasharr); 
 
+    free(Db->countWard->arr);
+    free(Db->countWard->hasharr); 
 
+    free(Db->countNN->arr);
+    free(Db->countNN->hasharr); 
 
+    
     //FREE TABLE STRUCTS
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);

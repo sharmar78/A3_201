@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 
     int loop = 1; // Loop flag for checking options
     int option = 8;
-    int sortBy;
+    char sortBy[10];
     int numTabEntry;
     char memberCode[10];
     int numTableEntry;
@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
         printf("Usage: %s <input> <file>\n", argv[0]);
         return 1;
     }
-
     Db = db_create_impl();
     importDB(argv[2]);
     
@@ -74,7 +73,9 @@ int main(int argc, char *argv[]) {
             //Sorts the db according to the given criteria, most likely using qsort()
             case 3:
                 printf("Enter a criteria to sort by (1.TT 2.SM 3.StM 4.NID 5.NN 6.W): ");
-                scanf("%d", &sortBy);
+                scanf("%s", sortBy);
+
+                sortByMember(sortBy);
                 break;
 
             //Edit a table entry

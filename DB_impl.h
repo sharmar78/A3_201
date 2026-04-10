@@ -24,23 +24,42 @@
 //Helper functions
 int compressDB(char fileName[20]);
 
-//Resing functions
+//===================SORTING FUNTIONS=================================
+int compare_TT(const void *a, const void *b);
+int compare_SM(const void *a, const void *b);
+int compare_StM(const void *a, const void *b);
+int compare_NN(const void *a, const void *b);
+int compare_Ward(const void *a, const void *b);
+int updateHashValues(Table *table);  //updates hashtable values/maintable index after sorting
+//==================================================================================
+
+
+
+//===================RESIZING FUNTIONS=================================
+bool is_prime(int num);
 void resize(Table *table);
 bool resizeTable(Table *table, int newSize);
 bool resizeHashtable(Table *table, int newSize);
+//==================================================================================
 
-//Hash functions
+
+
+//===================INSERTING NODE FUNCTIONS=================================
 unsigned long hash(const char *s); //finds the hash index value
 char *convertInt_impl(int ID);
 int findIndex(Table *table, const char *key); //probes a table for an empty or identical key
 void insertbyType(Table *table, individual_table *element, char *key);
 void insertbyID(Table *table, individual_table *element, int ID);
+void insertMainTable(Table *table, individual_table *element, int ID);
 void insertElement(Table *table, individual_table *element, char *key, int index);
+//==================================================================================
 
-//Table functions
+
+//===================TABLE AND NODE SET UP FUNTIONS=================================
 Table *setupTable_impl(int capacity); //setups up inner tables
 DataBase *db_create_impl(void); //sets up the entirety of all tables. uses setupTable_impl() inside.
 char *setStr_impl(char *value); //adds fields to the individual table struct
+//==================================================================================
 
 
 #endif

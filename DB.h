@@ -70,6 +70,8 @@ typedef struct {
     Table *structuralMaterialTable;
     NeighbourhoodTable *neighborhoodTable;
     PicnicTable *picnicTableTable;
+    Table *countWard;
+    Table *countNN;
 } DataBase;
 
 /* Declare a global DataBase variable*/

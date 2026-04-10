@@ -57,6 +57,52 @@ int compressDB(char fileName[20]) {
     return 0;
 }
 
+
+
+//===================SORTING FUNTIONS=================================
+int compare_TT(const void *a, const void *b){
+    const list_node *aa = *(const list_node **)a;
+    const list_node *bb = *(const list_node **)b;
+    return strcmp(aa->node->tabletype, bb->node->tabletype);
+}
+
+int compare_SM(const void *a, const void *b){
+    const list_node *aa = *(const list_node **)a;
+    const list_node *bb = *(const list_node **)b;
+    return strcmp(aa->node->material, bb->node->material);
+}
+
+int compare_StM(const void *a, const void *b){
+    const list_node *aa = *(const list_node **)a;
+    const list_node *bb = *(const list_node **)b;
+    return strcmp(aa->node->structural, bb->node->structural);
+}
+
+int compare_NN(const void *a, const void *b){
+    const list_node *aa = *(const list_node **)a;
+    const list_node *bb = *(const list_node **)b;
+    return strcmp(aa->node->neighbourhoodName, bb->node->neighbourhoodName);
+}
+
+int compare_Ward(const void *a, const void *b){
+    const list_node *aa = *(const list_node **)a;
+    const list_node *bb = *(const list_node **)b;
+    return strcmp(aa->node->ward, bb->node->ward);
+}
+
+int updateHashValues(Table *table){
+    char convertedInt[10];
+    int keyIndex;
+    for (int i = 0; i < table->numElems; i++){
+        snprintf(convertedInt, 9, "%d", table->arr[i]->node->ID);
+        keyIndex = findIndex(table, convertedInt);
+        table->hasharr[keyIndex]->index = i;
+    }
+    return 0;
+}
+//==================================================================================
+
+
 //===================RESIZING FUNTIONS=================================
 bool is_prime(int num) {
     if (num <= 1) {   return false;}
@@ -192,7 +238,7 @@ void insertbyType(Table *table, individual_table *element, char *key)
     insertElement(table, element, key, keyIndex);
 }
 
-/*insert into main table with ID number*/
+/*insert into neighbourhood table with neighbourhood ID number*/
 void insertbyID(Table *table, individual_table *element, int ID)
 {
     int checkSize = table->numElems + 1;
@@ -206,6 +252,24 @@ void insertbyID(Table *table, individual_table *element, int ID)
     insertElement(table, element, key, keyIndex);
 }
 
+/*insert into main table with ID number*/
+void insertMainTable(Table *table, individual_table *element, int ID)
+{
+    int checkSize = table->numElems + 1;
+    if ((checkSize * 3) > (table->capacity * 2))
+    {
+        resize(table);
+    }
+    
+    char *key = convertInt_impl(ID);
+    int keyIndex = hash(key) % table->capacity;
+    while (table->hasharr[keyIndex] != NULL)
+    {   keyIndex++;                   
+        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
+        {   keyIndex -= table->capacity;}
+    }
+    insertElement(table, element, key, keyIndex);
+}
 
 /*
 * inserts the node into the desired table.
@@ -299,6 +363,8 @@ DataBase *db_create_impl(void)
     db->structuralMaterialTable = setupTable_impl(7);
     db->neighborhoodTable = setupTable_impl(19);
     db->picnicTableTable = setupTable_impl(19);
+    db->countWard = setupTable_impl(7);
+    db->countNN = setupTable_impl(7);
     if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || db->neighborhoodTable == NULL ||db->picnicTableTable == NULL)
     {
         freeDB();
