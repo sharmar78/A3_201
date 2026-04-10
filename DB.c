@@ -127,28 +127,53 @@ void exportDB(char *fileName)
 
 int countEntries(char *memberName, char * value)  {
     int count = 0;
-    
+    hashInd *hashnode = NULL;
+
     if (strcmp(memberName, "1") == 0) {
         int TTInd = findIndex(Db->tableTypeTable, value);
-        count = Db->tableTypeTable->hasharr[TTInd]->count;
+        hashnode = Db->tableTypeTable->hasharr[TTInd];
+        if (hashnode != NULL){
+            count = Db->tableTypeTable->hasharr[TTInd]->count;
+        }
     } else if (strcmp(memberName, "2") == 0) {
         int SMInd = findIndex(Db->surfaceMaterialTable, value);
-        count = Db->surfaceMaterialTable->hasharr[SMInd]->count;
+        hashnode = Db->surfaceMaterialTable->hasharr[SMInd];
+        if (hashnode != NULL){
+            count = Db->surfaceMaterialTable->hasharr[SMInd]->count;
+        }
     } else if (strcmp(memberName, "3") == 0) {
         int StMInd = findIndex(Db->structuralMaterialTable, value);
-        count = Db->structuralMaterialTable->hasharr[StMInd]->count;
+        hashnode = Db->structuralMaterialTable->hasharr[StMInd];
+        if (hashnode != NULL){
+            count = Db->structuralMaterialTable->hasharr[StMInd]->count;
+        }
     } else if (strcmp(memberName, "4") == 0) {
         int NIDInd = findIndex(Db->neighborhoodTable, value);
-        count = Db->neighborhoodTable->hasharr[NIDInd]->count;
+        hashnode = Db->neighborhoodTable->hasharr[NIDInd];
+        if (hashnode != NULL){
+            count = Db->neighborhoodTable->hasharr[NIDInd]->count;
+        }
     } else if (strcmp(memberName, "5") == 0) {
         int NNInd = findIndex(Db->countNN, value);
-        count = Db->countNN->hasharr[NNInd]->count;
+        hashnode = Db->countNN->hasharr[NNInd];
+        if (hashnode != NULL){
+            count = Db->countNN->hasharr[NNInd]->count;
+        }
     } else if (strcmp(memberName, "6") == 0) {
         int WardInd = findIndex(Db->countWard, value);
-        count = Db->countWard->hasharr[WardInd]->count;
+        hashnode = Db->countWard->hasharr[WardInd];
+        if (hashnode != NULL){
+           count = Db->countWard->hasharr[WardInd]->count;
+        }
     }
     
-    printf("%s has occured %d times", value, count);
+    if (hashnode != NULL){
+        printf("%s has occured %d times\n", value, count);
+    }
+    else{
+        printf("Value does not exist.\n");
+    }
+    
     return count;
 }
 

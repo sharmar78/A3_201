@@ -365,7 +365,9 @@ DataBase *db_create_impl(void)
     db->picnicTableTable = setupTable_impl(19);
     db->countWard = setupTable_impl(7);
     db->countNN = setupTable_impl(7);
-    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || db->neighborhoodTable == NULL ||db->picnicTableTable == NULL)
+    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || 
+        db->neighborhoodTable == NULL || db->picnicTableTable == NULL ||
+        db->countWard == NULL || db->countNN == NULL)
     {
         freeDB();
         return NULL;
