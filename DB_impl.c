@@ -8,21 +8,16 @@
  * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
 
-#include "DB.h"    
-#include "DB_impl.h"  /* Import the public database header. */
+#include "DB.h"
+#include "DB_impl.h"
 
-#include <stdio.h> //For `printf`.
-#include <stdlib.h> //For `size_t`, `malloc`, `calloc`, `free`.
-#include <stddef.h> //For 'size_t'
-#include <string.h> //For 'strcpy'
-#include <stdbool.h> //For `bool`.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdbool.h>
 
-/**
- * This function comresses the file and exports it into another file
- * We can use the logic used in A1 in the squeeze.c program
- * Each caracter occuring more than once will be counted and then removed then when new letter happens
- * it resets count, eg. Hello -> hel2o
- */
+//Compresses the database into another file.
 int compressDB(char fileName[20]) {
 
     FILE *in = fopen("PicnicTable.csv", "r");
@@ -58,8 +53,7 @@ int compressDB(char fileName[20]) {
 }
 
 
-
-//===================SORTING FUNTIONS=================================
+//The following are comparing functions which later will be passed to qsort()
 int compare_TT(const void *a, const void *b){
     const list_node *aa = *(const list_node **)a;
     const list_node *bb = *(const list_node **)b;
@@ -90,7 +84,10 @@ int compare_Ward(const void *a, const void *b){
     return strcmp(aa->node->ward, bb->node->ward);
 }
 
-int updateHashValues(Table *table){
+
+//This function updated the hash value
+int updateHashValues(Table *table) {
+
     char convertedInt[10];
     int keyIndex;
     for (int i = 0; i < table->numElems; i++){
@@ -100,25 +97,31 @@ int updateHashValues(Table *table){
     }
     return 0;
 }
-//==================================================================================
 
+/* =========================================================
+   RESIZE FUNCTIONS
+   ========================================================= */
 
-//===================RESIZING FUNTIONS=================================
+//This function will make sure the hash table size is prime.
+//Reason being for collision managment and even key distribution
 bool is_prime(int num) {
-    if (num <= 1) {   return false;}
 
-    for (int i = 2; i * i <= num; i++)  // 2 to root numbers(i) of 'num'; i * i = i^2 = num, so i = sqrt(num). avoids type conversion to double with sqrt() function.  
-    {   if (num % i == 0)  // any numbers that leave no remainder after dividing by root is not a prime number
+    if (num <= 1) {
         return false;
     }
 
-    return true;  // if this line is reached, its is a prime number
+    for (int i = 2; i * i <= num; i++) {
+        if (num % i == 0) {
+        return false;
+        }
+    }
+    return true;
 }
 
-/**
- * This function resizes the hashtable and the regular table once it is full.
- */
+//This function resizes the table by increasing the capacity by 2 times
+//Before doubling size it checks weather the hash table size is prime.
 void resize(Table *table) {
+
     int newSize = table->capacity * 2;
     while (!is_prime(newSize)) {
         newSize++;
@@ -127,48 +130,45 @@ void resize(Table *table) {
     bool regTable = resizeTable(table, newSize);
     bool hashTable = resizeHashtable(table, newSize);
 
-    if (!regTable || !hashTable){
-        printf("Rehashing failed. Table size not increased.");
+    if (!regTable || !hashTable) {
+        printf("Rehashing failed.\n");
         return;
     }
-    
+
     table->capacity = newSize;
 }
 
-/**
- * Reallocates memory 
- */
+//This function checks weather the table size has increased.
 bool resizeTable(Table *table, int newSize) {
 
     table->arr = realloc(table->arr, newSize * sizeof(*table->arr));
 
-    if (table->arr == NULL){
+    if (table->arr == NULL) {
         return false;
     }
+
     return true;
 }
 
-
+//This function checks weather the hash table size has increased
 bool resizeHashtable(Table *table, int newSize) {
 
     hashInd **newArr = malloc(newSize * sizeof(*newArr));
 
-    if (newArr == NULL){
+    if (newArr == NULL) {
         return false;
     }
-    
-    for (int i = 0; i < table->capacity; i++) {   
+
+    for (int i = 0; i < newSize; i++) {
         newArr[i] = NULL;
     }
 
+    /* FIXED: MUST USE table->capacity, NOT newSize */
     for (int i = 0; i < table->capacity; i++) {
-        if (table->hasharr[i] != NULL){
+        if (table->hasharr[i] != NULL) {
             int newHashInd = hash(table->hasharr[i]->key) % newSize;
-
-            while (newArr[newHashInd] != NULL){   
-                newHashInd++;                   
-                if (newHashInd >= newSize)  //wrap around if index number goes past the new table size
-                {   newHashInd -= newSize;}
+            while (newArr[newHashInd] != NULL) {
+                newHashInd = (newHashInd + 1) % newSize;
             }
             newArr[newHashInd] = table->hasharr[i];
         }
@@ -179,185 +179,171 @@ bool resizeHashtable(Table *table, int newSize) {
 
     return true;
 }
-//==================================================================================
 
+/* =========================================================
+   HASH
+   ========================================================= */
 
-
-//===================INSERTING NODE FUNCTIONS=================================
-
-/**
- * Implemented the djb2 hashing algorithm.
- */
+//Hashing algorithm
 unsigned long hash(const char *s) {
+
     unsigned long ret = 5381;
     char c;
 
-    while ((c = *s++))
-    {
+    while ((c = *s++)) {
         ret = (unsigned char)(c) + (33 * ret);
     }
     return ret;
 }
 
-char *convertInt_impl(int ID)
-{
+//Converts an integer ID into a string key since hashing uses strings
+char *convertInt_impl(int ID) {
+
     char convertedInt[10];
     snprintf(convertedInt, 9, "%d", ID);
 
     char *key = malloc(strlen(convertedInt) + 1);
-    if (key == NULL) {return NULL;}
-    strcpy(key, convertedInt);
+    if (!key) return NULL;
 
+    strcpy(key, convertedInt);
     return key;
 }
 
+//Finds wheere a key has to go in the hashtable and places it there
+//Linear probing has been used
+int findIndex(Table *table, const char *key) {
 
-/*Probes a given table for a slot, either NULL or the existing key*/
-int findIndex(Table *table, const char *key)
-{
+    //Safety check
+    if (key == NULL) {
+        return 0;
+    } 
+
+    //Linear probing
     int keyIndex = hash(key) % table->capacity;
-    while (table->hasharr[keyIndex] != NULL && strcmp(table->hasharr[keyIndex]->key, key) != 0)
-    {   keyIndex++;                   
-        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
-        {   keyIndex -= table->capacity;}
+
+    while (table->hasharr[keyIndex] != NULL && table->hasharr[keyIndex]->key != NULL &&
+           strcmp(table->hasharr[keyIndex]->key, key) != 0)
+    {
+        keyIndex = (keyIndex + 1) % table->capacity;
     }
+
     return keyIndex;
 }
 
+/* =========================================================
+   INSERT FUNCTIONS
+   ========================================================= */
 
-/*insert into sub tables with material name or table type*/
-void insertbyType(Table *table, individual_table *element, char *key)
-{
+//Inserts data using a string key
+void insertbyType(Table *table, individual_table *element, char *key) {
+
     int checkSize = table->numElems + 1;
     if ((checkSize * 3) > (table->capacity * 2))
-    {
         resize(table);
-    }
 
     int keyIndex = findIndex(table, key);
     insertElement(table, element, key, keyIndex);
 }
 
-/*insert into neighbourhood table with neighbourhood ID number*/
-void insertbyID(Table *table, individual_table *element, int ID)
-{
+//Inserts using ID converted to string
+void insertbyID(Table *table, individual_table *element, int ID) {
     int checkSize = table->numElems + 1;
     if ((checkSize * 3) > (table->capacity * 2))
-    {
         resize(table);
-    }
 
     char *key = convertInt_impl(ID);
     int keyIndex = findIndex(table, key);
     insertElement(table, element, key, keyIndex);
 }
 
-/*insert into main table with ID number*/
-void insertMainTable(Table *table, individual_table *element, int ID)
-{
+//Insert main table
+void insertMainTable(Table *table, individual_table *element, int ID) {
     int checkSize = table->numElems + 1;
     if ((checkSize * 3) > (table->capacity * 2))
-    {
         resize(table);
-    }
-    
+
     char *key = convertInt_impl(ID);
+
+    if (key == NULL) {
+        return;
+    }
+
     int keyIndex = hash(key) % table->capacity;
-    while (table->hasharr[keyIndex] != NULL)
-    {   keyIndex++;                   
-        if (keyIndex >= table->capacity)  //wrap around if index number goes past the table size
-        {   keyIndex -= table->capacity;}
+
+    while (table->hasharr[keyIndex] != NULL) {
+        keyIndex = (keyIndex + 1) % table->capacity;
     }
+
     insertElement(table, element, key, keyIndex);
 }
 
-/*
-* inserts the node into the desired table.
-* arguments
-* table: the target hash table
-* element: the unique table information node
-* hashindex: hashtable slot calculated after probing
-* key: ID or material type 
-*/
-void insertElement(Table *table, individual_table *element, char *key, int hashindex)
-{
-    if (table->hasharr[hashindex] == NULL) //empty slot in the table
+
+void insertElement(Table *table, individual_table *element, char *key, int hashindex) {
+    if (table->numElems >= table->capacity) {
+        resize(table);
+    }
+
+    if (table->hasharr[hashindex] == NULL)
     {
         hashInd *hashnode = malloc(sizeof(*hashnode));
-        hashnode->key = key;   //hashnode key points to the same key as inputted
-        hashnode->index = table->numElems;   //index for the ACTUAL table is amount of nodes currently in place. if it is the first element, index = 0. second element, index = 1...
-        hashnode->count = 1;   //first instance of this key
-        table->hasharr[hashindex] = hashnode;   //insert new entry into hashtable at the hashindex
+        hashnode->key = key;
+        hashnode->index = table->numElems;
+        hashnode->count = 1;
 
-        list_node *head = malloc(sizeof(*head));  //create a bucket for the elements
-        head->node = element;      //bucket points to the inputted element 
-        head->next = NULL;         //bucket used for linked lists
-        table->arr[table->numElems] = head;  //insert bucket into actual table at respective index
-        table->numElems++;  //increment element count for the next index position and resizing calculation
+        table->hasharr[hashindex] = hashnode;
+
+        list_node *head = malloc(sizeof(*head));
+        head->node = element;
+        head->next = NULL;
+
+        table->arr[table->numElems] = head;
+        table->numElems++;
     }
- 
-    else if (strcmp(table->hasharr[hashindex]->key, key) == 0) //key already exists in the table
+    else if (strcmp(table->hasharr[hashindex]->key, key) == 0)
     {
-        table->hasharr[hashindex]->count++; //add more instances of this key to the total count
+        table->hasharr[hashindex]->count++;
 
-        list_node *newhead = malloc(sizeof(*newhead));  //create a new bucket
-        newhead->node = element;   //store element 
-        newhead->next = table->arr[table->hasharr[hashindex]->index];  //new head's next points at old head in actual table
-        table->arr[table->hasharr[hashindex]->index] = newhead;  //insert head into actual list as first 
+        list_node *newhead = malloc(sizeof(*newhead));
+        newhead->node = element;
+        newhead->next = table->arr[table->hasharr[hashindex]->index];
 
+        table->arr[table->hasharr[hashindex]->index] = newhead;
     }
 }
-//==================================================================================
 
 
+Table *setupTable_impl(int capacity) {
 
-//===================TABLE AND NODE SET UP FUNTIONS=================================
-/*
-*helper function for database create
-*sets up the actual tables of the database
-*/
-Table *setupTable_impl(int capacity)
-{
     Table *table = malloc(sizeof(*table));
-    if (table == NULL)
-    {
-        return NULL;
-    }
+    if (!table) return NULL;
+
     table->numElems = 0;
     table->capacity = capacity;
 
-    //SET UP REGULAR AND HASH TABLES
-    table->arr = malloc(table->capacity * sizeof(*table->arr));
-    table->hasharr = malloc(table->capacity * sizeof(*table->hasharr));
-    if (table->arr == NULL || table->hasharr == NULL)
-    {
+    table->arr = malloc(capacity * sizeof(*table->arr));
+    table->hasharr = malloc(capacity * sizeof(*table->hasharr));
+
+    if (!table->arr || !table->hasharr) {
         free(table->arr);
         free(table->hasharr);
         free(table);
         return NULL;
     }
 
-    //SET INDIVIDUAL ELEMENTS TO NULL
-    for (int i = 0; i < table->capacity; i ++)
-    {
+    for (int i = 0; i < capacity; i++) {
         table->arr[i] = NULL;
         table->hasharr[i] = NULL;
     }
+
     return table;
 }
 
-/*sets up the database table
-* five database struct points to five table structs that contains the array
-*/
+
 DataBase *db_create_impl(void)
 {
-    DataBase *db = malloc(sizeof(*db)); //set up database struct
-    if (db == NULL)
-    {
-        return NULL; //allocation failed
-    }
+    DataBase *db = malloc(sizeof(*db));
+    if (!db) return NULL;
 
-    // set up tables
     db->tableTypeTable = setupTable_impl(7);
     db->surfaceMaterialTable = setupTable_impl(7);
     db->structuralMaterialTable = setupTable_impl(7);
@@ -365,31 +351,24 @@ DataBase *db_create_impl(void)
     db->picnicTableTable = setupTable_impl(19);
     db->countWard = setupTable_impl(7);
     db->countNN = setupTable_impl(7);
-    if (db->tableTypeTable == NULL || db->surfaceMaterialTable == NULL || db->structuralMaterialTable == NULL || 
-        db->neighborhoodTable == NULL || db->picnicTableTable == NULL ||
-        db->countWard == NULL || db->countNN == NULL)
+
+    if (!db->tableTypeTable || !db->surfaceMaterialTable ||
+        !db->structuralMaterialTable || !db->neighborhoodTable ||
+        !db->picnicTableTable || !db->countWard || !db->countNN)
     {
         freeDB();
         return NULL;
     }
+
     return db;
 }
 
-/*
-*helper function to parse lines
-*adds str to element's node's field value
-*ex: round table to table type field
-*/
-char *setStr_impl(char *value)
-{
-    if (value == NULL){
-        return NULL;
-    }
+char *setStr_impl(char *value) {
+    if (!value) return NULL;
+
     char *field = malloc(strlen(value) + 1);
-    if (field == NULL) {
-        return NULL;
-    }
+    if (!field) return NULL;
+
     strcpy(field, value);
     return field;
 }
-//==================================================================================
