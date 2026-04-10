@@ -63,6 +63,7 @@ void importDB(char *fileName) {
         insertbyType(Db->tableTypeTable, element, element->tabletype);
         insertbyType(Db->surfaceMaterialTable, element, element->material);
         insertbyType(Db->structuralMaterialTable, element, element->structural);
+        insertbyID(Db->neighborhoodTable, element, element->neighbourhoodID);
     }
     fclose(file);
 }
@@ -110,7 +111,8 @@ void exportDB(char *fileName)
  *  5- Neighborhood Name
  *  6- Ward
  */
-int countEntries(char *memberName, char *value) {
+
+int countEntries(char *memberName, char * value)  {
     int count = 0;
     
     for (int i = 0; i < Db->picnicTableTable->numElems; i++) {
@@ -127,7 +129,7 @@ int countEntries(char *memberName, char *value) {
                 count++;
             }
         } else if (strcmp(memberName, "4") == 0) {
-            if(Db->picnicTableTable->arr[i]->node->neighbourhoodID == atoi(value)) {
+            if(strcmp(Db->picnicTableTable->arr[i]->node->neighbourhoodID, value) == 0) {
                 count++;
             }
         } else if (strcmp(memberName, "5") == 0) {
@@ -137,13 +139,11 @@ int countEntries(char *memberName, char *value) {
         } else if (strcmp(memberName, "6") == 0) {
             if(strcmp(Db->picnicTableTable->arr[i]->node->ward, value) == 0) {
                 count++;
-            }
         }
     }
 
-
-    printf("%s has occured %d times\n", value, count);
-    
+} 
+    printf("%s has occured %d times", value, count);
     return count;
 }
 
