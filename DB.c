@@ -356,7 +356,7 @@ void reportByWard(int critReport) {
 void freeDB()
 {
     //FREE REG TABLE ELEMENTS
-    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
+    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
         if (Db->picnicTableTable->arr[i] != NULL)
         {
@@ -370,29 +370,105 @@ void freeDB()
             free(Db->picnicTableTable->arr[i]->node->longitude);
             free(Db->picnicTableTable->arr[i]->node->location);
             free(Db->picnicTableTable->arr[i]->node);
-
-            //free the linked list
-            list_node *curr = Db->picnicTableTable->arr[i];
-            while (curr != NULL) {
-                list_node *tmp = curr;
-                curr = curr->next;
-                free(tmp);
-            }
+            free(Db->picnicTableTable->arr[i]);
             Db->picnicTableTable->arr[i] = NULL;
         }
     }
 
+    //FREE HASH TABLE ELEMENTS
 
     for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
         if (Db->picnicTableTable->hasharr[i] != NULL)
         {
             free(Db->picnicTableTable->hasharr[i]->key);
+            Db->picnicTableTable->hasharr[i]->key = NULL;
             free(Db->picnicTableTable->hasharr[i]);
             Db->picnicTableTable->hasharr[i] = NULL;
         }
     }
 
+    for (int i = 0; i < Db->tableTypeTable->capacity; i++)
+    {
+        if (Db->tableTypeTable->hasharr[i] != NULL)
+        {
+            free(Db->tableTypeTable->arr[i]->node);
+            free(Db->tableTypeTable->arr[i]);
+            free(Db->tableTypeTable->hasharr[i]->key);
+            Db->tableTypeTable->hasharr[i]->key = NULL;
+            free(Db->tableTypeTable->hasharr[i]);
+            Db->tableTypeTable->hasharr[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < Db->surfaceMaterialTable->capacity; i++)
+    {
+        if (Db->surfaceMaterialTable->hasharr[i] != NULL)
+        {
+            free(Db->surfaceMaterialTable->arr[i]->node);
+            free(Db->surfaceMaterialTable->arr[i]);
+            free(Db->surfaceMaterialTable->hasharr[i]->key);
+            Db->surfaceMaterialTable->hasharr[i]->key = NULL;
+            free(Db->surfaceMaterialTable->hasharr[i]);
+            Db->surfaceMaterialTable->hasharr[i]= NULL;
+
+        }
+    }
+
+    for (int i = 0; i < Db->structuralMaterialTable->capacity; i++)
+    {
+        if (Db->structuralMaterialTable->hasharr[i] != NULL)
+        {
+            free(Db->structuralMaterialTable->arr[i]->node);
+            free(Db->structuralMaterialTable->arr[i]);
+            free(Db->structuralMaterialTable->hasharr[i]->key);
+            Db->structuralMaterialTable->hasharr[i]->key = NULL;
+            free(Db->structuralMaterialTable->hasharr[i]);
+            Db->structuralMaterialTable->hasharr[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < Db->neighborhoodTable->capacity; i++)
+    {
+        if (Db->neighborhoodTable->hasharr[i] != NULL)
+        {
+            free(Db->neighborhoodTable->arr[i]->node);
+            free(Db->neighborhoodTable->arr[i]);
+            free(Db->neighborhoodTable->hasharr[i]->key);
+            Db->neighborhoodTable->hasharr[i]->key = NULL;
+            free(Db->neighborhoodTable->hasharr[i]);
+            Db->neighborhoodTable->hasharr[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < Db->countWard->capacity; i++)
+    {
+        if (Db->countWard->hasharr[i] != NULL)
+        {
+            free(Db->countWard->arr[i]->node);
+            free(Db->countWard->arr[i]);
+            free(Db->countWard->hasharr[i]->key);
+            Db->countWard->hasharr[i]->key = NULL;
+            free(Db->countWard->hasharr[i]);
+            Db->countWard->hasharr[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < Db->countNN->capacity; i++)
+    {
+        if (Db->countNN->hasharr[i] != NULL)
+        {
+            free(Db->countNN->arr[i]->node);
+            free(Db->countNN->arr[i]);
+            free(Db->countNN->hasharr[i]->key);
+            Db->countNN->hasharr[i]->key = NULL;
+            free(Db->countNN->hasharr[i]);
+            Db->countNN->hasharr[i] = NULL;
+        }
+    }
+
+
+    //FREE TABLES ARRAYS
     free(Db->picnicTableTable->arr); 
     free(Db->picnicTableTable->hasharr); 
     
@@ -414,13 +490,19 @@ void freeDB()
     free(Db->countNN->arr);
     free(Db->countNN->hasharr); 
 
+
+
+    //FREE TABLE STRUCTS
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
-    free(Db->countNN);
     free(Db->countWard);
+    free(Db->countNN);
 
+
+
+    //FREE DATABASE
     free(Db);
 }

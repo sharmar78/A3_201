@@ -21,7 +21,7 @@
 int compressDB(char fileName[20]) {
 
     FILE *in = fopen("PicnicTable.csv", "r");
-    FILE *out = fopen(fileName, "w");
+    FILE *out = fopen(fileName, "wb");
 
     if (in == NULL || out == NULL) {
         printf("File error.\n");
