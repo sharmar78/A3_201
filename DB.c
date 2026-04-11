@@ -297,7 +297,7 @@ void reportByNeighbourhood(){
         }
 
         // Printing loop
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n",
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n",
             n->ID,
             n->tabletype,
             n->material,
@@ -334,7 +334,7 @@ void reportByWard(int critReport) {
     //Printing loop
     for (int i = 0; i < Db->picnicTableTable->numElems; i++){
         individual_table *n = Db->picnicTableTable->arr[i]->node;
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n",
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s\n",
             n->ID,
             n->tabletype,
             n->material,
