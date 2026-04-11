@@ -17,22 +17,22 @@ DB.o: DB.c DB.h
 DB_impl.o: DB_impl.c DB.h DB_impl.h
 	$(CC) $(CFLAGS) -c DB_impl.c
 
-#Unsure
-testDashboardCsv:
+#Run Dashboard
+runDashboard:
 	./dashboard -c PicnicTableSmall.csv
 
 #Export
 testDashboardBin:
-	./dashboard -b PicnicTablec.bin
+	./dashboard -b PicnicTable.bin
 
 #Checks leaks
 valgrindDashboard: dashboard
 	valgrind --leak-check=full --track-origins=yes ./$^
 
-#Clean rule removes all .0 files
+#Clean rule removes all .o files
 clean:
-	rm -f *.o dashboard dashboard output.txt table_type.csv surface_material.csv structural_material.csv neighbourhood_name.csv ward.csv
+	rm -f *.o dashboard
 
-
+#Tar rule
 tar: 
 	cd .. && tar --exclude='.git' -czvf cmpt201_A3_RS.tar.gz A3_201
