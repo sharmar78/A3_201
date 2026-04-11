@@ -227,6 +227,7 @@ void sortByMember(char *memberName){
  * corresponding table.
  */
 void editTableEntry(int tableID, char *memberName, char *value) {
+    individual_table* new_elem = (individual_table*) malloc(sizeof(individual_table));
     switch (atoi(memberName)) { 
         // Note: I haven't added a check for if user inputs a non-existant value (i.e. "lars")
         // Using switch/case for O(n) time, likely too small a difference to care, feel free to replace with if/else
@@ -234,22 +235,34 @@ void editTableEntry(int tableID, char *memberName, char *value) {
             for (int i = 0; i < Db->tableTypeTable->numElems; i++) {
                 if (Db->tableTypeTable->arr[i]->node->ID == tableID) {
                     Db->tableTypeTable->arr[i]->node->tabletype = value;
+                    free(new_elem);
+                    return;
                 }
             }
+            new_elem->tabletype = value;
+            insertbyType(Db->tableTypeTable, new_elem, value);
             break;
         case 2:
             for (int i = 0; i < Db->surfaceMaterialTable->numElems; i++) {
                 if (Db->surfaceMaterialTable->arr[i]->node->ID == tableID) {
                     Db->surfaceMaterialTable->arr[i]->node->material = value;
+                    free(new_elem);
+                    return;
                 }
             }
+            new_elem->material = value;
+            insertbyType(Db->surfaceMaterialTable, new_elem, value);
             break;
         case 3:
             for (int i = 0; i < Db->structuralMaterialTable->numElems; i++) {
                 if (Db->structuralMaterialTable->arr[i]->node->ID == tableID) {
                     Db->structuralMaterialTable->arr[i]->node->structural = value;
+                    free(new_elem);
+                    return;
                 }
             }
+            new_elem->structural = value;
+            insertbyType(Db->structuralMaterialTable, new_elem, value);
             break;
     }
     return;

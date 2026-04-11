@@ -24,7 +24,6 @@ int main(int argc, char *argv[]) {
     char sortBy[10];
     int numTabEntry;
     char memberCode[10];
-    int numTableEntry;
     char value[40];
     char fileName[20];
     int critReport;
@@ -84,13 +83,18 @@ int main(int argc, char *argv[]) {
                 printf("Enter a numerical table entry to edit: ");
                 scanf("%d", &numTabEntry);
 
-                while (numTabEntry > 3 || numTabEntry < 0) {
-                    printf("Invalid entry. Enter a value between 0 and 3: ");
-                    scanf("%d", &numTabEntry);
-                }
-
                 printf("Enter member code (1.TT 2.SM 3.StM): ");
-                scanf("%d", &numTableEntry);
+                scanf("%s", memberCode);
+
+                while (atoi(memberCode) > 3 || atoi(memberCode) < 0) {
+                    printf("Invalid entry. Enter a value between 0 and 3: ");
+                    scanf("%s", memberCode);
+                }
+                printf("Enter Value: ");
+                scanf(" %[^\n]", value);
+
+                editTableEntry(numTabEntry, memberCode, value);
+
                 break;
 
             //Reports a criteria
