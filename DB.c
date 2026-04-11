@@ -35,7 +35,7 @@ void importDB(char *fileName) {
     if (file == NULL)
     {
         printf("Failed to open file.\n");
-        return;
+        exit(1);
     }
 
     char line[256] = {'\0'}; //one line from the csv file, 256 is arbitrary and inspired by windows file name limit
