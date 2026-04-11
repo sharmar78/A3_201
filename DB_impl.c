@@ -178,6 +178,7 @@ bool resizeHashtable(Table *table, int newSize) {
         }
     }
 
+    //Free the hashtable to avoid memory leak
     free(table->hasharr);
     table->hasharr = newArr;
 
@@ -239,7 +240,7 @@ int findIndex(Table *table, const char *key) {
    INSERT FUNCTIONS
    ========================================================= */
 
-//Inserts data using a string key
+//Inserts data using, a string key
 void insertbyType(Table *table, individual_table *element, char *key) {
 
     int checkSize = table->numElems + 1;
@@ -263,7 +264,7 @@ void insertbyID(Table *table, individual_table *element, int ID) {
     insertElement(table, element, key, keyIndex);
 }
 
-//Insert main table
+//Insert main picnic table
 void insertMainTable(Table *table, individual_table *element, int ID) {
     int checkSize = table->numElems + 1;
     if ((checkSize * 3) > (table->capacity * 2))
@@ -284,7 +285,7 @@ void insertMainTable(Table *table, individual_table *element, int ID) {
     insertElement(table, element, key, keyIndex);
 }
 
-
+//Inserts into the database into an empty slot using linear probing
 void insertElement(Table *table, individual_table *element, char *key, int hashindex) {
     if (table->numElems >= table->capacity) {
         resize(table);
@@ -319,7 +320,7 @@ void insertElement(Table *table, individual_table *element, char *key, int hashi
     }
 }
 
-
+//Initializes the table with the given capacity
 Table *setupTable_impl(int capacity) {
 
     Table *table = malloc(sizeof(*table));
@@ -347,6 +348,7 @@ Table *setupTable_impl(int capacity) {
 }
 
 
+//Initializes a whole database with lookup tables
 DataBase *db_create_impl(void)
 {
     DataBase *db = malloc(sizeof(*db));
@@ -371,6 +373,7 @@ DataBase *db_create_impl(void)
     return db;
 }
 
+//Allocates memory and copy each string
 char *setStr_impl(char *value) {
     if (!value) return NULL;
 
