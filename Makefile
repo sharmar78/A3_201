@@ -17,13 +17,19 @@ DB.o: DB.c DB.h
 DB_impl.o: DB_impl.c DB.h DB_impl.h
 	$(CC) $(CFLAGS) -c DB_impl.c
 
-#Run Dashboard
+#Run Dashboard (CSV test)
 runDashboard:
 	./dashboard -c PicnicTableSmall.csv
 
-#Export
-testDashboardBin:
+#Run Dashboard (Binary test)
+runDashboardBin:
 	./dashboard -b PicnicTable.bin
+
+#Make all (required)
+all: dashboard
+
+#Run all tests
+tests: runDashboard runDashboardBin
 
 #Checks leaks
 valgrindDashboard: dashboard
@@ -34,5 +40,7 @@ clean:
 	rm -f *.o dashboard
 
 #Tar rule
-tar: 
+tar:
 	cd .. && tar --exclude='.git' -czvf cmpt201_A3_RS.tar.gz A3_201
+
+.PHONY: all tests clean tar runDashboard runDashboardBin valgrindDashboard

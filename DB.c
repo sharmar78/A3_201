@@ -129,38 +129,45 @@ int countEntries(char *memberName, char * value)  {
     
     int count = 0;
     hashInd *hashnode = NULL;
+    char *label = "";
 
     if (strcmp(memberName, "1") == 0) {
+        label = "table type";
         int TTInd = findIndex(Db->tableTypeTable, value);
         hashnode = Db->tableTypeTable->hasharr[TTInd];
         if (hashnode != NULL){
             count = Db->tableTypeTable->hasharr[TTInd]->count;
         }
     } else if (strcmp(memberName, "2") == 0) {
+        label = "surface material";
         int SMInd = findIndex(Db->surfaceMaterialTable, value);
         hashnode = Db->surfaceMaterialTable->hasharr[SMInd];
         if (hashnode != NULL){
             count = Db->surfaceMaterialTable->hasharr[SMInd]->count;
         }
     } else if (strcmp(memberName, "3") == 0) {
+        label = "structural material";
         int StMInd = findIndex(Db->structuralMaterialTable, value);
         hashnode = Db->structuralMaterialTable->hasharr[StMInd];
         if (hashnode != NULL){
             count = Db->structuralMaterialTable->hasharr[StMInd]->count;
         }
     } else if (strcmp(memberName, "4") == 0) {
+        label = "neighbourhood id";
         int NIDInd = findIndex(Db->neighborhoodTable, value);
         hashnode = Db->neighborhoodTable->hasharr[NIDInd];
         if (hashnode != NULL){
             count = Db->neighborhoodTable->hasharr[NIDInd]->count;
         }
     } else if (strcmp(memberName, "5") == 0) {
+        label = "neighbourhood name";
         int NNInd = findIndex(Db->countNN, value);
         hashnode = Db->countNN->hasharr[NNInd];
         if (hashnode != NULL){
             count = Db->countNN->hasharr[NNInd]->count;
         }
     } else if (strcmp(memberName, "6") == 0) {
+        label = "ward";
         int WardInd = findIndex(Db->countWard, value);
         hashnode = Db->countWard->hasharr[WardInd];
         if (hashnode != NULL){
@@ -169,7 +176,7 @@ int countEntries(char *memberName, char * value)  {
     }
     
     if (hashnode != NULL){
-        printf("%s has occured %d times\n", value, count);
+        printf("%s <%s> appeared in the table %d time(s)\n", label, value, count);
     }
     else{
         printf("Value does not exist.\n");
