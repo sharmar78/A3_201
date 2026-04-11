@@ -4,7 +4,7 @@
  * TODO: Provide a high-level description of what is contained
  * in this file.
  *
- * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Author: Rythem Sharma, Kevin Wu, Jacques Villeneuve
  * Lab instructor: R.D. Ardy
  * Lecture instructor: R.D. Ardy, Dhara Wagh
 */
@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+/**
+ * This main the main interface of the program where user chooses the desired options
+ */
 int main(int argc, char *argv[]) {
 
     int loop = 1; // Loop flag for checking options
@@ -55,7 +57,6 @@ int main(int argc, char *argv[]) {
             case 1:
                 printf("File name to export into: ");
                 scanf("%s", export);
-                
                 exportDB(export);
                 break;
 

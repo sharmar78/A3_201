@@ -3,7 +3,7 @@
  * TODO: Provide a high-level description of what is contained
  * in this file.
  *
- * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Author: Rythem Sharma, Kevin Wu, Jacques Villeneuve
  * Lab instructor: R.D. Ardy
  * Lecture instructor: R.D. Ardy, Dhara Wagh
  */
