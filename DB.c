@@ -260,16 +260,37 @@ void editTableEntry(int tableID, char *memberName, char *value) {
  * print a listing of picnic tables grouped by neigbourhoods in ascending 
  * alphabetical order.
  */
-void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alphabetical order without modifying dB<<
-    for (int i = 0; i < Db->neighborhoodTable->numElems; i++) {
-        //The printf statement is incredibly long, if there is a smarter way of doing this, feel free to replace
-        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n", Db->neighborhoodTable->arr[i]->node->ID, 
-            Db->neighborhoodTable->arr[i]->node->tabletype, Db->neighborhoodTable->arr[i]->node->material, 
-            Db->neighborhoodTable->arr[i]->node->structural, Db->neighborhoodTable->arr[i]->node->street, 
-            Db->neighborhoodTable->arr[i]->node->neighbourhoodID, Db->neighborhoodTable->arr[i]->node->neighbourhoodName, 
-            Db->neighborhoodTable->arr[i]->node->ward, Db->neighborhoodTable->arr[i]->node->latitude, 
-            Db->neighborhoodTable->arr[i]->node->longitude, Db->neighborhoodTable->arr[i]->node->location);
-    } //This is UNTESTED, not sure if it is correct syntax to break up a printf call like this
+void reportByNeighbourhood(){
+
+    // Sort table by neighbourhood name
+    qsort(Db->picnicTableTable->arr,Db->picnicTableTable->numElems,sizeof(list_node *),compare_NN);
+
+    char *currentNeighbourhood = NULL;
+
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++){
+
+        individual_table *n = Db->picnicTableTable->arr[i]->node;
+
+        if (currentNeighbourhood == NULL || strcmp(currentNeighbourhood, n->neighbourhoodName) != 0) {
+            currentNeighbourhood = n->neighbourhoodName;
+            printf("%s\n", currentNeighbourhood);
+        }
+
+        // Printing loop
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n",
+            n->ID,
+            n->tabletype,
+            n->material,
+            n->structural,
+            n->street,
+            n->neighbourhoodID,
+            n->neighbourhoodName,
+            n->ward,
+            n->latitude,
+            n->longitude,
+            n->location
+        );
+    }
 }
 
 /*
@@ -277,6 +298,36 @@ void reportByNeighbourhood() { // >>UNFINISHED; requires a way to print in alpha
  */
 void reportByWard(int critReport) {
 
+    //Checks if user want neighbour or ward
+    //Then qsort() will sort them.
+    if (critReport == 1) {
+        // Sort by neighborhood name ascending.
+        qsort(Db->picnicTableTable->arr,Db->picnicTableTable->numElems,sizeof(list_node *),compare_NN);
+    } else if (critReport == 2) {
+        // Sort by ward ascending
+        qsort(Db->picnicTableTable->arr,Db->picnicTableTable->numElems,sizeof(list_node *),compare_Ward);
+    }else{
+        printf("Invalid report option.\n");
+        return;
+    }
+
+    //Printing loop
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++){
+        individual_table *n = Db->picnicTableTable->arr[i]->node;
+        printf("%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, (%s)\n",
+            n->ID,
+            n->tabletype,
+            n->material,
+            n->structural,
+            n->street,
+            n->neighbourhoodID,
+            n->neighbourhoodName,
+            n->ward,
+            n->latitude,
+            n->longitude,
+            n->location
+        );
+    }
 }
 
 /*
