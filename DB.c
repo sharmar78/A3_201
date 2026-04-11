@@ -126,6 +126,7 @@ void exportDB(char *fileName)
  */
 
 int countEntries(char *memberName, char * value)  {
+    
     int count = 0;
     hashInd *hashnode = NULL;
 
@@ -284,7 +285,7 @@ void reportByWard(int critReport) {
 void freeDB()
 {
     //FREE REG TABLE ELEMENTS
-    for (int i = 0; i < Db->picnicTableTable->capacity; i++)
+    for (int i = 0; i < Db->picnicTableTable->numElems; i++)
     {
         if (Db->picnicTableTable->arr[i] != NULL)
         {
@@ -298,22 +299,29 @@ void freeDB()
             free(Db->picnicTableTable->arr[i]->node->longitude);
             free(Db->picnicTableTable->arr[i]->node->location);
             free(Db->picnicTableTable->arr[i]->node);
-            free(Db->picnicTableTable->arr[i]);
+
+            //free the linked list
+            list_node *curr = Db->picnicTableTable->arr[i];
+            while (curr != NULL) {
+                list_node *tmp = curr;
+                curr = curr->next;
+                free(tmp);
+            }
             Db->picnicTableTable->arr[i] = NULL;
         }
     }
 
-    //FREE HASH TABLE ELEMENTS
+
     for (int i = 0; i < Db->picnicTableTable->capacity; i++)
     {
         if (Db->picnicTableTable->hasharr[i] != NULL)
         {
             free(Db->picnicTableTable->hasharr[i]->key);
+            free(Db->picnicTableTable->hasharr[i]);
             Db->picnicTableTable->hasharr[i] = NULL;
         }
     }
 
-    //FREE TABLES ARRAYS
     free(Db->picnicTableTable->arr); 
     free(Db->picnicTableTable->hasharr); 
     
@@ -335,16 +343,13 @@ void freeDB()
     free(Db->countNN->arr);
     free(Db->countNN->hasharr); 
 
-    
-    //FREE TABLE STRUCTS
     free(Db->tableTypeTable);
     free(Db->surfaceMaterialTable);
     free(Db->structuralMaterialTable);
     free(Db->neighborhoodTable);
     free(Db->picnicTableTable);
+    free(Db->countNN);
+    free(Db->countWard);
 
-
-
-    //FREE DATABASE
     free(Db);
 }

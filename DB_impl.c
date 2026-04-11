@@ -141,11 +141,16 @@ void resize(Table *table) {
 //This function checks weather the table size has increased.
 bool resizeTable(Table *table, int newSize) {
 
-    table->arr = realloc(table->arr, newSize * sizeof(*table->arr));
+    // table->arr = realloc(table->arr, newSize * sizeof(*table->arr));
 
-    if (table->arr == NULL) {
+    //Use temporary pointer so original pointer not lost.
+    list_node **temp = realloc(table->arr, newSize * sizeof(*table->arr));
+
+    if (temp ==NULL) {
         return false;
     }
+
+    table->arr = temp;
 
     return true;
 }
@@ -163,7 +168,6 @@ bool resizeHashtable(Table *table, int newSize) {
         newArr[i] = NULL;
     }
 
-    /* FIXED: MUST USE table->capacity, NOT newSize */
     for (int i = 0; i < table->capacity; i++) {
         if (table->hasharr[i] != NULL) {
             int newHashInd = hash(table->hasharr[i]->key) % newSize;
@@ -203,9 +207,10 @@ char *convertInt_impl(int ID) {
     snprintf(convertedInt, 9, "%d", ID);
 
     char *key = malloc(strlen(convertedInt) + 1);
-    if (!key) return NULL;
+    if (key == NULL) return NULL;
 
     strcpy(key, convertedInt);
+
     return key;
 }
 
@@ -241,8 +246,10 @@ void insertbyType(Table *table, individual_table *element, char *key) {
     if ((checkSize * 3) > (table->capacity * 2))
         resize(table);
 
-    int keyIndex = findIndex(table, key);
-    insertElement(table, element, key, keyIndex);
+    char *keyCopy = malloc(strlen(key) + 1);
+    strcpy(keyCopy, key);
+    int keyIndex = findIndex(table, keyCopy);
+    insertElement(table, element, keyCopy, keyIndex);
 }
 
 //Inserts using ID converted to string
@@ -301,6 +308,7 @@ void insertElement(Table *table, individual_table *element, char *key, int hashi
     }
     else if (strcmp(table->hasharr[hashindex]->key, key) == 0)
     {
+        free(key);
         table->hasharr[hashindex]->count++;
 
         list_node *newhead = malloc(sizeof(*newhead));
@@ -315,7 +323,7 @@ void insertElement(Table *table, individual_table *element, char *key, int hashi
 Table *setupTable_impl(int capacity) {
 
     Table *table = malloc(sizeof(*table));
-    if (!table) return NULL;
+    if (table == NULL) return NULL;
 
     table->numElems = 0;
     table->capacity = capacity;
