@@ -1,4 +1,4 @@
-# Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+# Author: Rythem Sharma, Kevin Wu, Jacques Villeneuve
 # Lab instructor: R.D. Ardy
 # Lecture instructor: R.D. Ardy, Dhara Wagh
 #Makefile for A3
@@ -19,7 +19,7 @@ DB_impl.o: DB_impl.c DB.h DB_impl.h
 
 #Run Dashboard (CSV test)
 runDashboard:
-	./dashboard -c PicnicTableSmall.csv
+	./dashboard -c PicnicTable.csv
 
 #Run Dashboard (Binary test)
 runDashboardBin:

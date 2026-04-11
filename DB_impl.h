@@ -7,7 +7,7 @@
  * It is a common convention to append "_impl" to a private implementation of
  * some public interface, so we do so here.
  *
- * Author: Rythem Sherma, Kevin Wu, Jacques Villeneuve
+ * Author: Rythem Sharma, Kevin Wu, Jacques Villeneuve
  * Lab instructor: R.D. Ardy
  * Lecture instructor: R.D. Ardy, Dhara Wagh
  */

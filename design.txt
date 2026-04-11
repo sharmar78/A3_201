@@ -23,7 +23,9 @@ main table
     arr[value] gives you your desired node's slot
 
 
-Progress: 
+Progress: - We- We will be using qSort to sort the table.
+ will be using qSort to sort the table.
+
 - helper functions to create database, tables, and a node to contain the values of each table is made
 - implemented importDB() and exportDB() is then made. for importDB() we scan each line until "\0" and then 
 split the line into category then copy or append to the linked list.
