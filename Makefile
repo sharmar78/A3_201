@@ -32,3 +32,7 @@ valgrindDashboard: dashboard
 #Clean rule removes all .0 files
 clean:
 	rm -f *.o dashboard dashboard output.txt table_type.csv surface_material.csv structural_material.csv neighbourhood_name.csv ward.csv
+
+
+tar: 
+	cd .. && tar --exclude='.git' -czvf cmpt201_A3_RS.tar.gz A3_201
